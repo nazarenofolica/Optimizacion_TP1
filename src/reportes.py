@@ -102,7 +102,8 @@ def tabla_comercial(res):
                 "Fact. incremental ($MM)": incremental[cod],
                 "Facturación total ($MM)": total[cod],
                 "Crecimiento (%)": 100 * incremental[cod] / base[cod] if base[cod] else 0.0,
-                "Unidades (millones)": total[cod] * datos.MILLON / prod["precio"] / datos.MILLON,
+                # facturación en $MM / precio en $ = millones de paquetes
+                "Unidades (millones)": total[cod] / prod["precio"],
                 "Utilidad neta ($MM)": total[cod] * prod["m_neto"],
                 "Utilidad oper. ($MM)": total[cod] * prod["m_oper"],
                 "Market share (%)": 100 * total[cod] / mercado_total,

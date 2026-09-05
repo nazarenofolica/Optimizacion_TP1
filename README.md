@@ -13,8 +13,9 @@ Investigación de Operaciones I · UCA · 2025 2C
 
 | # | Archivo | Por qué |
 |---|---|---|
+| 0 | [`README_HUMANO.md`](README_HUMANO.md) | Resumen sin tecnicismos: qué es el problema, qué se hizo y qué falta. 5 minutos |
 | 1 | [`plan_de_trabajo.md`](plan_de_trabajo.md) | El problema, los datos, los supuestos y el modelo. Empezá por **§0** (aclara una trampa de la consigna) |
-| 2 | [`procedimiento.md`](procedimiento.md) **§2** | **Los desvíos respecto del plan.** El plan quedó desactualizado en dos puntos y la corrección vive acá |
+| 2 | [`procedimiento.md`](procedimiento.md) **§2** | **Los desvíos respecto del plan.** El plan quedó desactualizado en cuatro secciones y la corrección vive acá |
 | 3 | [`procedimiento.md`](procedimiento.md) §3 y §5 | Los resultados obtenidos y las llamadas exactas para lo que falta |
 
 > ⚠️ **El plan NO se corrige.** Es a propósito: el contraste entre lo que planeamos y lo que
@@ -133,15 +134,15 @@ Detalle completo en [`procedimiento.md`](procedimiento.md) §3.
 Página 1 = estructura del informe. Página 4 = preguntas a responder. No son lo mismo.
 Ver plan §0. Cuando hables de "el punto 2", aclará de cuál lista.
 
-**2. El plan quedó desactualizado en dos puntos** (por el hallazgo de R10, ver
-`procedimiento.md` §2.1):
+**2. Cuatro secciones del plan quedaron desactualizadas** por el hallazgo de R10
+(ver `procedimiento.md` §2.1). El modelo real es el que está en `src/`, no el del plan:
 
-- **§12.c** asume que hay una frontera de Pareto que trazar. Con las reglas actuales colapsa
-  en un solo punto. La pregunta sigue teniendo respuesta, pero es otra: hay que **relajar R3 y
-  R4** para que el trade-off aparezca.
-- **§11** no incluye `R10_tope_saturacion` en la lista de parámetros a barrer, porque esa
-  restricción no existía cuando se escribió el plan. **Hay que agregarlo** (probar 60 %, 70 %,
-  80 %, 100 %): el segmento alto queda saturado, así que ese techo mueve mucho el resultado.
+| Sección del plan | Qué le falta |
+|---|---|
+| **§5.2** Variables por tramo | No tiene el tramo de **desperdicio** (tasa 0, sin tope) que lleva cada marca |
+| **§7** Tabla de restricciones | Llega hasta R9. **Falta R10**, la saturación física por segmento |
+| **§11** Protocolo de tests | No incluye `R10_tope_saturacion` entre los parámetros a barrer. **Hay que agregarlo** (60 %, 70 %, 80 %, 100 %): el segmento alto queda saturado, así que ese techo mueve mucho el resultado |
+| **§12.c** Frontera de Pareto | Asume que hay una curva que trazar. Con las reglas actuales **colapsa en un punto**. La pregunta sigue teniendo respuesta, pero es otra: hay que **relajar R3 y R4** para que el trade-off aparezca |
 
 **3. Hay una restricción que no está en el enunciado: R10.**
 El enunciado pone un techo de participación solo para la gama baja (el 65 %). Sin un techo
@@ -197,11 +198,13 @@ construir_params(S1_tasa_triguetti=140)          # ±30 %
 construir_params(R10_tope_saturacion=0.70)
 ```
 
-`construir_params()` **falla con `KeyError` si el nombre del parámetro no existe**. Es
-deliberado: un typo silencioso en un barrido de 40 corridas es un error caro de encontrar.
+**Tanto `construir_params()` como `desactivar` fallan con `KeyError` si el nombre no
+existe.** Es deliberado: un typo silencioso es el peor error posible acá, porque
+`desactivar=["R3_triguetti"]` (sin el `_min`) devolvería el caso base **haciéndose pasar por
+el contrafactual**, y la conclusión de la pregunta d) saldría al revés.
 
-Nombres válidos: los de `config.SUPUESTOS` y `config.REGLAS`.
-Restricciones desactivables: las claves de `modelo.DESCRIPCION`.
+Nombres válidos: los de `config.SUPUESTOS` y `config.REGLAS` para los parámetros; las claves
+de `modelo.DESCRIPCION` para las restricciones desactivables.
 
 ---
 

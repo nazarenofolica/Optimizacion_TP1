@@ -51,14 +51,18 @@ def verificar_cotas(res):
     presupuesto = params["presupuesto"]
     piso_tri = params["reglas"]["R3_pct_triguetti"] * presupuesto
     mult = params["reglas"]["R4_multiplo_rena"]
+    # Cotas derivadas de R3 + R4: Triguetti se lleva su piso y Rena, como mínimo,
+    # el doble de ese piso. Lo que sobra es lo único que el modelo reparte libremente.
+    piso_tri_rs = piso_tri * (1 + mult)
+    resto = presupuesto - piso_tri_rs
 
     controles = [
         ("Presupuesto agotado", abs(sum(x.values()) - presupuesto) < TOL),
-        ("R3: Triguetti >= 5.100", x["TRI"] >= piso_tri - TOL),
+        (f"R3: Triguetti >= {piso_tri:,.0f}", x["TRI"] >= piso_tri - TOL),
         ("R4: Rena >= 2 x (Can + Tri)", x["RS"] >= mult * (x["CAN"] + x["TRI"]) - TOL),
         ("R2: Don Carlo = Agnellis", abs(x["DC"] - x["AG"]) < TOL),
-        ("Triguetti + Rena >= 15.300", x["TRI"] + x["RS"] >= 15_300 - TOL),
-        ("Resto (DC+AG+CAN) <= 1.700", x["DC"] + x["AG"] + x["CAN"] <= 1_700 + TOL),
+        (f"Triguetti + Rena >= {piso_tri_rs:,.0f}", x["TRI"] + x["RS"] >= piso_tri_rs - TOL),
+        (f"Resto (DC+AG+CAN) <= {resto:,.0f}", x["DC"] + x["AG"] + x["CAN"] <= resto + TOL),
         ("Z > término constante", res["Z"] > res["Z_constante"]),
     ]
     for descripcion, ok in controles:

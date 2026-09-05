@@ -122,7 +122,24 @@ escribió como `48,1043`. El valor correcto es **48,1025 %** (797.107 / 1.657.10
 redondeo al transcribir, no del modelo: lo detectó `00_verificar_datos.py` en su primera
 corrida, que es exactamente para lo que existe ese script.
 
-### 2.4. Tolerancia de los controles cruzados
+### 2.4. Validación de nombres en `desactivar`
+
+Detectado al revisar el código, no al escribirlo. `modelo.resolver(desactivar=[...])`
+aceptaba cualquier string: un nombre mal escrito no daba error, simplemente no desactivaba
+nada y **devolvía el caso base disfrazado de contrafactual**.
+
+Es grave porque las preguntas b) y d) se responden justamente desactivando restricciones:
+
+```
+desactivar=["R3_triguetti_min"]  ->  Z = 80.100,96   x_TRI = 0        (correcto)
+desactivar=["R3_triguetti"]      ->  Z = 76.578,60   x_TRI = 5.100    (caso base!)
+```
+
+Se agregó `_validar_desactivar()`, que levanta `KeyError` con la lista de nombres válidos.
+Ahora el comportamiento es coherente con `construir_params()`, que ya validaba sus overrides
+por la misma razón.
+
+### 2.5. Tolerancia de los controles cruzados
 
 CBC devuelve las variables con ~7 cifras significativas, así que sobre valores del orden de
 $10.000MM arrastra errores de hasta 1e-4. El control manual estaba escrito con tolerancia
@@ -154,7 +171,7 @@ Corrida: `python scripts/01_modelo_base.py` · estado **Optimal** en las tres co
 | Marca | Inversión | Clientes nuevos | Fact. base | Fact. increm. | Fact. total | Crec. | Utilidad neta | % de la fact. |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Don Carlo | 850 | 340.000 | 320.821 | 13.940 | 334.761 | +4,3 % | 16.738,05 | 32,6 % |
-| Agnellis | 850 | 425.000 | 192.626 | 17.425 | 210.051 | +9,1 % | 15.753,82 | 20,5 % |
+| Agnellis | 850 | 425.000 | 192.626 | 17.425 | 210.051 | +9,1 % | 15.753,83 | 20,5 % |
 | Triguetti | 5.100 | 1.020.000 | 186.048 | 59.160 | 245.208 | +31,8 % | 22.068,72 | 23,9 % |
 | Candealix | 0 | 0 | 78.600 | 0 | 78.600 | 0,0 % | 6.288,00 | 7,7 % |
 | Rena Speziale | 10.200 | 1.032.000 | 19.012 | 138.288 | 157.300 | **+727,4 %** | 15.730,00 | 15,3 % |

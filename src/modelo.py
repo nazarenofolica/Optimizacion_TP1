@@ -46,6 +46,23 @@ def _nombre_limite(cod, i):
     return _NOMBRE_LIMITE_TRAMO.get((cod, i), f"R8_lim_{cod}{i}")
 
 
+def _validar_desactivar(desactivar):
+    """Rechaza nombres de restricción que no existen.
+
+    Sin esto, `desactivar=["R3_triguetti"]` (falta el `_min`) no da error: devuelve
+    el caso base como si fuera el contrafactual. Como las preguntas b) y d) se
+    responden justamente desactivando restricciones, un typo produciría una
+    respuesta equivocada con apariencia de correcta.
+    """
+    desconocidos = set(desactivar) - set(DESCRIPCION)
+    if desconocidos:
+        raise KeyError(
+            f"Restricción(es) inexistente(s): {sorted(desconocidos)}. "
+            f"Válidas: {sorted(DESCRIPCION)}"
+        )
+    return set(desactivar)
+
+
 def construir(params, objetivo="neta", epsilon=None, desactivar=()):
     """Arma el problema de PL y devuelve (problema, variables).
 
@@ -70,7 +87,7 @@ def construir(params, objetivo="neta", epsilon=None, desactivar=()):
     if objetivo not in ("neta", "oper", "facturacion"):
         raise ValueError(f"Objetivo desconocido: {objetivo!r}")
 
-    desactivar = set(desactivar)
+    desactivar = _validar_desactivar(desactivar)
     reglas = params["reglas"]
     supuestos = params["supuestos"]
     lista_tramos = datos.tramos(params)
