@@ -51,6 +51,7 @@ pip install -r requirements.txt      # solo la primera vez
 
 python scripts/00_verificar_datos.py # 31 asserts contra los números calculados a mano
 python scripts/01_modelo_base.py     # resuelve el punto a) e imprime todo
+python scripts/02_pregunta_b.py      # pregunta b): barrido de la paridad Don Carlo/Agnellis
 ```
 
 **Corré siempre `00` antes que `01`.** Verifica que las tablas derivadas (mercado,
@@ -78,13 +79,17 @@ TP1_OPT/
 │   ├── config.py                 datos del enunciado + supuestos S1..S9 + reglas
 │   ├── datos.py                  tablas derivadas (mercado, base, coeficientes, cupos)
 │   ├── modelo.py                 construcción y resolución del LP
-│   └── reportes.py               tablas de salida
+│   ├── reportes.py               tablas de salida
+│   └── graficos.py               gráficos (matplotlib) para el informe
 │
 ├── scripts/
 │   ├── 00_verificar_datos.py     verificación de datos (correr primero)
-│   └── 01_modelo_base.py         punto a): plan de asignación
+│   ├── 01_modelo_base.py         punto a): plan de asignación
+│   └── 02_pregunta_b.py          pregunta b): escenarios de Agnellis
 │
-└── resultados/tablas/            CSVs generados
+└── resultados/
+    ├── tablas/                   CSVs generados
+    └── graficos/                 PNGs generados
 ```
 
 **Regla de oro de `config.py`:** están separados los **datos del enunciado** (no se tocan) de
@@ -114,15 +119,25 @@ Tres hallazgos que van al informe:
 
 Detalle completo en [`procedimiento.md`](procedimiento.md) §3.
 
+### ✅ Hecho — Pregunta b) del caso (escenarios de Agnellis)
+
+`x_DonCarlo = x_Agnellis` (S6) generalizado a `x_DonCarlo = k · x_Agnellis`,
+barriendo k de 1,0 a 0,0 con el mismo modelo (`scripts/02_pregunta_b.py`).
+
+**Hallazgo:** soltar del todo la paridad solo vale **+0,80 % de utilidad**
+(+$609,88MM) pero le cuesta a Don Carlo el 100 % de su presencia relativa
+dentro del par gama baja (44,4 % → 0 %). La relación es casi lineal, así que
+un k intermedio (≈0,5–0,75) es la zona razonable si se quiere ceder algo de
+presencia a cambio de utilidad. Detalle en [`procedimiento.md`](procedimiento.md) §5.1.
+
 ### ❌ Pendiente
 
 | Tarea | Referencia | Nota |
 |---|---|---|
-| Tests de supuestos (±30 %, tornado) | plan §11 | **Hacer antes que la pregunta b)**: esa pregunta depende de S6, que está sin testear |
-| Pregunta b) — escenarios de Agnellis | plan §12.b | |
+| Tests de supuestos (±30 %, tornado) | plan §11 | El único que ya quedó testeado de facto es **S6** (es la pregunta b)) |
 | Pregunta c) — market share vs. rentabilidad | plan §12.c | ⚠️ el enfoque del plan quedó desactualizado, ver abajo |
 | Pregunta d) — el 30 % de Triguetti | plan §12.d | Ya hay material: el dual de R3 y los $1.630MM estériles |
-| Gráficos (`src/graficos.py`) | — | No existe todavía. Faltan: tornado, Pareto, utilidad vs. k, utilidad vs. % Triguetti |
+| Gráficos adicionales (`src/graficos.py`) | — | Ya existe el módulo con `utilidad_vs_k_paridad`. Faltan: tornado, Pareto, utilidad vs. % Triguetti |
 | Diagrama del proceso | plan §9 | Hay un ASCII; hay que redibujarlo prolijo (draw.io) |
 | Redacción del informe | plan §15 | El checklist mapea cada ítem pedido contra dónde se responde |
 

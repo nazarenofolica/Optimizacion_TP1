@@ -4,7 +4,8 @@
 > resolver el modelo, incluyendo **en qué se apartó del plan y por qué**. El plan está en
 > [`plan_de_trabajo.md`](plan_de_trabajo.md) y **no se reescribe** para que coincida con esto.
 >
-> **Estado:** punto a) resuelto. Pendientes: tests de supuestos (§4) y preguntas b), c) y d) (§5).
+> **Estado:** punto a) resuelto. Pregunta b) resuelta (§5.1). Pendientes: tests
+> de supuestos (§4) y preguntas c) y d) (§5.2, §5.3).
 
 ---
 
@@ -26,11 +27,15 @@ TP1_OPT/
 │   ├── config.py                 datos del enunciado + supuestos S1..S9 + reglas
 │   ├── datos.py                  tablas derivadas (mercado, base, coeficientes, cupos)
 │   ├── modelo.py                 construcción y resolución del LP
-│   └── reportes.py               tablas de salida
+│   ├── reportes.py               tablas de salida
+│   └── graficos.py               gráficos (matplotlib) para el informe
 ├── scripts/
 │   ├── 00_verificar_datos.py     31 asserts contra los valores calculados a mano
-│   └── 01_modelo_base.py         resuelve el punto a)
-└── resultados/tablas/*.csv
+│   ├── 01_modelo_base.py         resuelve el punto a)
+│   └── 02_pregunta_b.py          resuelve la pregunta b) (barrido de S6/R2)
+└── resultados/
+    ├── tablas/*.csv
+    └── graficos/*.png
 ```
 
 ### 1.3. Diseño del modelo parametrizado
@@ -278,13 +283,76 @@ que bajar ese techo reduce directamente lo que Rena puede captar.
 
 ## 5. Preguntas b), c) y d)
 
-*Pendiente.* El código ya está preparado:
+### 5.1. Pregunta b) — Escenarios de crecimiento de Agnellis [RESUELTO]
 
-| Pregunta | Cómo se corre |
-|---|---|
-| b) Agnellis vs. Don Carlo | `construir_params(S6_paridad_dc_ag=k)` barriendo k, o `desactivar=["R2_paridad"]` |
-| c) Frontera de Pareto | `resolver(params, epsilon=…)` barriendo ε |
-| d) El 30 % de Triguetti | `desactivar=["R3_triguetti_min"]`, o `construir_params(R3_pct_triguetti=…)` |
+Corrida: `python scripts/02_pregunta_b.py` · las 10 corridas del barrido terminaron
+en estado **Optimal**.
+
+**Cómo se armó.** R2 (supuesto S6) se generalizó de `x_DC = x_AG` a
+`x_DC = k · x_AG`, y se barrió `k` de 1,00 (paridad total, el caso base del punto
+a) a 0,00 (toda la plata libre del par gama baja va a Agnellis), reutilizando
+`modelo.resolver()` sin tocar el modelo. Es literalmente el test del supuesto S6
+que el plan pedía hacer antes de esta pregunta.
+
+| k | Don Carlo ($MM) | Agnellis ($MM) | Presencia relativa DC (%) | Utilidad neta ($MM) | Market share (%) |
+|---:|---:|---:|---:|---:|---:|
+| 1,00 (base) | 850,00 | 850,00 | 44,44 | 76.578,60 | 61,91 |
+| 0,75 | 728,57 | 971,43 | 37,50 | 76.665,72 | 61,94 |
+| 0,50 | 566,67 | 1.133,33 | 28,57 | 76.781,89 | 61,98 |
+| 0,30 | 392,31 | 1.307,69 | 19,35 | 76.906,99 | 62,02 |
+| 0,00 | 0,00 | 1.700,00 | 0,00 | 77.188,47 | 62,12 |
+
+*(tabla completa de 10 puntos en `resultados/tablas/07_pregunta_b_escenarios_agnellis.csv`;
+gráfico en `resultados/graficos/02_utilidad_vs_k_paridad.png`)*
+
+**Hallazgo — el efecto en la utilidad es chico, el efecto en la presencia es
+grande y casi lineal.** De paridad total (k=1) a soltar el 100 % a Agnellis (k=0):
+
+```
+Utilidad neta   : $76.578,60 MM -> $77.188,47 MM   (+$609,88 MM,  +0,796 %)
+Presencia de DC : 44,44 %       -> 0,00 %           (-44,44 puntos)
+```
+
+Es coherente con el precio sombra de R2 en el caso base (−0,35875 $/$MM, §3.5):
+la paridad es barata de mantener porque Don Carlo (0,82 de utilidad por $MM) y
+Agnellis (1,5375) no son tan distintos entre sí como Triguetti/Rena — la brecha
+de rendimiento del par gama baja es la más chica de las cinco marcas.
+
+**R5 (tope 65 % de la gama baja) no se activa en ningún punto del barrido**, ni
+siquiera en k=0. El freno nunca es el mercado (sobran >1,7 millones de clientes
+de cupo en todos los casos): es que R3+R4 ya le dejan al par gama baja solo
+$1.700MM para repartirse, muy por debajo de lo que el segmento podría absorber.
+
+**Respuesta a las dos preguntas del enunciado:**
+
+1. **¿Cuánto necesita Don Carlo para no perder presencia significativa?** La
+   relación es prácticamente lineal (`presencia_DC ≈ 44,44 % · k`), así que
+   "no perder presencia significativa" es una decisión de a cuánto se está
+   dispuesto a bajar k, no un umbral que salga solo del modelo. Con
+   `k ≈ 0,5–0,6` Don Carlo retiene 29–32 puntos de presencia relativa (64–73 %
+   de su presencia original de 44,44 %) a cambio de +$152 a +$203MM de
+   utilidad (+0,20–0,27 %).
+2. **¿Qué efecto tiene en la utilidad total?** Positivo pero marginal: relajar
+   completamente la paridad vale menos de **1 punto porcentual** de utilidad
+   adicional. **La paridad R2 casi no cuesta nada** de mantener, así que la
+   pregunta de negocio no es "¿podemos pagar el costo de la paridad?" (el costo
+   es trivial) sino "¿vale la pena arriesgar la presencia de Don Carlo por una
+   ganancia de utilidad tan chica?". Con estos números, la respuesta razonable
+   es defender la paridad, o relajarla solo parcialmente (k≈0,5–0,75).
+
+### 5.2. Pregunta c) — Market share vs. rentabilidad
+
+*Pendiente.* Ver `plan_de_trabajo.md` §6.5 y §12.c — el enfoque de ε-constraint
+del plan quedó desactualizado (ver README.md "Trampas conocidas" #2): con las
+reglas actuales la frontera colapsa en un punto (§3.6), así que primero hay que
+relajar R3 y/o R4 para que aparezca un trade-off real que graficar.
+
+### 5.3. Pregunta d) — El 30 % obligatorio en Triguetti
+
+*Pendiente.* Ya hay material fuerte: el precio sombra de R3 (−2,49225, §3.5) y
+el hallazgo de los $1.630MM estériles (§3.4). Falta correr
+`desactivar=["R3_triguetti_min"]` y el barrido de porcentaje (0 %, 10 %, 20 %,
+30 %, 40 %) para graficar utilidad vs. % mínimo exigido.
 
 ---
 
