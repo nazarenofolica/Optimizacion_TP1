@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*.lp
+*.mps
+*-pulp.sol
+.venv/
+.ipynb_checkpoints/

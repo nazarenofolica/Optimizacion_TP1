@@ -1,0 +1,7 @@
+# TP1 Optimización — Pastarazzi
+# Instalar con:  pip install -r requirements.txt
+
+pulp>=3.0          # modelado y resolución del LP (solver CBC incluido)
+pandas>=2.0        # tablas de datos y de resultados
+matplotlib>=3.8    # frontera de Pareto, tornado y barridos de sensibilidad
+scipy>=1.10        # verificación cruzada del óptimo (linprog / HiGHS)

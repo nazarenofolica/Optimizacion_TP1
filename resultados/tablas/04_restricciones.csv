@@ -1,0 +1,12 @@
+﻿,Restricción,Descripción,Holgura,Activa,Precio sombra
+0,R1_presupuesto,Presupuesto total de marketing ($17.000MM),-0.0,True,1.17875
+1,R2_paridad,Paridad de inversión Don Carlo = Agnellis,-0.0,True,-0.35875
+2,R3_triguetti_min,Triguetti >= 30% del presupuesto,-0.0,True,-2.49225
+3,R4_rena_doble,Rena >= 2 x (Candealix + Triguetti),-0.0,True,-1.17875
+4,R5_tope_gama_baja,Don Carlo + Agnellis <= 65% del segmento bajo,1815000.0,False,-0.0
+5,R7_sat_triguetti,Saturación de Triguetti a los $6.000MM,900.0,False,-0.0
+6,R8a_lim_candealix,Primer tramo de Candealix ($5.000MM al 300 cl/MM),5000.0,False,-0.0
+7,R8b_lim_rena,Primer tramo de Rena ($3.500MM al 150 cl/MM),-0.0,True,4.4408921e-16
+8,R10_sat_bajo,Saturación física del segmento bajo (100% del TAM),9340000.0,False,-0.0
+9,R10_sat_medio,Saturación física del segmento medio (100% del TAM),4280000.0,False,-0.0
+10,R10_sat_alto,Saturación física del segmento alto (100% del TAM),-0.0,True,0.0134
