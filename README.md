@@ -3,7 +3,7 @@
 Modelo de programación lineal para asignar los **$17.000 millones** de presupuesto de
 marketing de Pastarazzi entre sus cinco marcas de pasta seca.
 
-Investigación de Operaciones I · UCA · 2025 2C
+Investigación de Operaciones I · UCA · 2026 2C
 
 ---
 
