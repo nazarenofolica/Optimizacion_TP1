@@ -4,8 +4,8 @@
 > resolver el modelo, incluyendo **en qué se apartó del plan y por qué**. El plan está en
 > [`plan_de_trabajo.md`](plan_de_trabajo.md) y **no se reescribe** para que coincida con esto.
 >
-> **Estado:** punto a) resuelto. Pregunta b) resuelta (§5.1). Pendientes: tests
-> de supuestos (§4) y preguntas c) y d) (§5.2, §5.3).
+> **Estado:** punto a) resuelto. Preguntas b) (§5.1) y c) (§5.2) resueltas.
+> Pendientes: tests de supuestos (§4) y pregunta d) (§5.3).
 
 ---
 
@@ -32,7 +32,8 @@ TP1_OPT/
 ├── scripts/
 │   ├── 00_verificar_datos.py     31 asserts contra los valores calculados a mano
 │   ├── 01_modelo_base.py         resuelve el punto a)
-│   └── 02_pregunta_b.py          resuelve la pregunta b) (barrido de S6/R2)
+│   ├── 02_pregunta_b.py          resuelve la pregunta b) (barrido de S6/R2)
+│   └── 03_pregunta_c.py          resuelve la pregunta c) (fronteras de Pareto)
 └── resultados/
     ├── tablas/*.csv
     └── graficos/*.png
@@ -285,67 +286,227 @@ que bajar ese techo reduce directamente lo que Rena puede captar.
 
 ### 5.1. Pregunta b) — Escenarios de crecimiento de Agnellis [RESUELTO]
 
-Corrida: `python scripts/02_pregunta_b.py` · las 10 corridas del barrido terminaron
-en estado **Optimal**.
+Corrida: `python scripts/02_pregunta_b.py` · 10 corridas del barrido, todas
+**Optimal**, y 6 controles cruzados en verde.
 
 **Cómo se armó.** R2 (supuesto S6) se generalizó de `x_DC = x_AG` a
 `x_DC = k · x_AG`, y se barrió `k` de 1,00 (paridad total, el caso base del punto
 a) a 0,00 (toda la plata libre del par gama baja va a Agnellis), reutilizando
-`modelo.resolver()` sin tocar el modelo. Es literalmente el test del supuesto S6
-que el plan pedía hacer antes de esta pregunta.
+`modelo.resolver()` sin tocar el modelo. Es literalmente el test del supuesto S6.
 
-| k | Don Carlo ($MM) | Agnellis ($MM) | Presencia relativa DC (%) | Utilidad neta ($MM) | Market share (%) |
+| k | Don Carlo ($MM) | Agnellis ($MM) | Presencia DC solo campaña (%) | Presencia DC base+campaña (%) | Utilidad neta ($MM) |
 |---:|---:|---:|---:|---:|---:|
-| 1,00 (base) | 850,00 | 850,00 | 44,44 | 76.578,60 | 61,91 |
-| 0,75 | 728,57 | 971,43 | 37,50 | 76.665,72 | 61,94 |
-| 0,50 | 566,67 | 1.133,33 | 28,57 | 76.781,89 | 61,98 |
-| 0,30 | 392,31 | 1.307,69 | 19,35 | 76.906,99 | 62,02 |
-| 0,00 | 0,00 | 1.700,00 | 0,00 | 77.188,47 | 62,12 |
+| 1,00 (base) | 850,00 | 850,00 | 44,44 | 64,68 | 76.578,60 |
+| 0,75 | 728,57 | 971,43 | 37,50 | 64,22 | 76.665,72 |
+| 0,50 | 566,67 | 1.133,33 | 28,57 | 63,60 | 76.781,89 |
+| 0,30 | 392,31 | 1.307,69 | 19,35 | 62,94 | 76.906,99 |
+| 0,00 | 0,00 | 1.700,00 | 0,00 | 61,45 | 77.188,47 |
 
 *(tabla completa de 10 puntos en `resultados/tablas/07_pregunta_b_escenarios_agnellis.csv`;
 gráfico en `resultados/graficos/02_utilidad_vs_k_paridad.png`)*
 
-**Hallazgo — el efecto en la utilidad es chico, el efecto en la presencia es
-grande y casi lineal.** De paridad total (k=1) a soltar el 100 % a Agnellis (k=0):
+#### Hallazgo 1 — el efecto en la utilidad es chico
 
-```
-Utilidad neta   : $76.578,60 MM -> $77.188,47 MM   (+$609,88 MM,  +0,796 %)
-Presencia de DC : 44,44 %       -> 0,00 %           (-44,44 puntos)
-```
-
-Es coherente con el precio sombra de R2 en el caso base (−0,35875 $/$MM, §3.5):
-la paridad es barata de mantener porque Don Carlo (0,82 de utilidad por $MM) y
-Agnellis (1,5375) no son tan distintos entre sí como Triguetti/Rena — la brecha
+De paridad total (k=1) a soltar el 100 % a Agnellis (k=0), la utilidad sube
+**+$609,88MM (+0,796 %)**. Es coherente con el precio sombra de R2 en el caso
+base (−0,35875, §3.5): la paridad es barata de mantener porque Don Carlo (0,82 de
+utilidad por $MM) y Agnellis (1,5375) no son tan distintos entre sí — la brecha
 de rendimiento del par gama baja es la más chica de las cinco marcas.
 
 **R5 (tope 65 % de la gama baja) no se activa en ningún punto del barrido**, ni
 siquiera en k=0. El freno nunca es el mercado (sobran >1,7 millones de clientes
-de cupo en todos los casos): es que R3+R4 ya le dejan al par gama baja solo
+de cupo en todos los casos): es que R3+R4 le dejan al par gama baja solo
 $1.700MM para repartirse, muy por debajo de lo que el segmento podría absorber.
 
-**Respuesta a las dos preguntas del enunciado:**
+#### Hallazgo 2 — "presencia" significa dos cosas distintas, y solo una responde la pregunta
 
-1. **¿Cuánto necesita Don Carlo para no perder presencia significativa?** La
-   relación es prácticamente lineal (`presencia_DC ≈ 44,44 % · k`), así que
-   "no perder presencia significativa" es una decisión de a cuánto se está
-   dispuesto a bajar k, no un umbral que salga solo del modelo. Con
-   `k ≈ 0,5–0,6` Don Carlo retiene 29–32 puntos de presencia relativa (64–73 %
-   de su presencia original de 44,44 %) a cambio de +$152 a +$203MM de
-   utilidad (+0,20–0,27 %).
+El enunciado pide *"evitar una pérdida significativa de su presencia"*. Según cómo
+se mida esa presencia, la respuesta se da vuelta:
+
+| Cómo se mide la presencia de Don Carlo | k=1,00 | k=0,00 | Cae |
+|---|---:|---:|---:|
+| Solo entre los clientes que capta la campaña | 44,44 % | 0,00 % | **44,44 pts** |
+| Sobre el mercado real (base instalada + campaña) | 64,68 % | 61,45 % | **3,23 pts** |
+| Participación en el segmento bajo | 36,58 % | 35,00 % | **1,58 pts** |
+
+La razón es de escala: **Don Carlo arranca con 7.525.000 clientes y la campaña
+entera mueve 340.000 — el 4,5 % de su base.** Medir la presencia solo sobre los
+clientes nuevos equivale a evaluar a una marca líder mirando únicamente lo que
+ganó este mes, e infla el efecto de la publicidad en un orden de magnitud.
+
+La segunda métrica es la que responde lo que pregunta el enunciado, y su
+conclusión es contundente: **aunque a Don Carlo no se le dé un solo peso, sigue
+siendo la marca dominante de la gama baja.** Su posición la sostiene la base
+instalada, no la campaña de este año.
+
+El panel derecho del gráfico muestra las dos curvas juntas a propósito: la brecha
+entre la línea punteada (se derrumba) y la sólida (casi plana) *es* la respuesta.
+
+#### Respuesta a las dos preguntas del enunciado
+
+1. **¿Cuánto necesita Don Carlo para no perder presencia significativa?**
+   Medido sobre el mercado real, **no necesita nada**: en el peor escenario del
+   barrido pierde 3,2 puntos de presencia relativa y 1,6 puntos de participación
+   en su segmento. Si aun así se quiere sostener la presencia *dentro de la
+   campaña*, esa métrica sigue la hipérbola `400k / (400k + 500)`, así que con
+   `k ≈ 0,5–0,6` Don Carlo retiene 29–32 puntos (64–73 % de su presencia
+   original de 44,44 %) a cambio de +$152 a +$203MM de utilidad.
 2. **¿Qué efecto tiene en la utilidad total?** Positivo pero marginal: relajar
-   completamente la paridad vale menos de **1 punto porcentual** de utilidad
-   adicional. **La paridad R2 casi no cuesta nada** de mantener, así que la
-   pregunta de negocio no es "¿podemos pagar el costo de la paridad?" (el costo
-   es trivial) sino "¿vale la pena arriesgar la presencia de Don Carlo por una
-   ganancia de utilidad tan chica?". Con estos números, la respuesta razonable
-   es defender la paridad, o relajarla solo parcialmente (k≈0,5–0,75).
+   completamente la paridad vale menos de **1 punto porcentual** de utilidad.
+   Es decir, **ni mantener la paridad ni romperla mueve la aguja**. La decisión
+   no es económica: con estos números se puede relajar la paridad para acompañar
+   a Agnellis sin poner en riesgo real a Don Carlo, o mantenerla por prolijidad
+   comercial. El modelo no da un argumento fuerte en ninguna dirección, y decirlo
+   es más honesto que fabricar una recomendación.
 
-### 5.2. Pregunta c) — Market share vs. rentabilidad
+#### Correcciones aplicadas sobre la primera versión de esta respuesta
 
-*Pendiente.* Ver `plan_de_trabajo.md` §6.5 y §12.c — el enfoque de ε-constraint
-del plan quedó desactualizado (ver README.md "Trampas conocidas" #2): con las
-reglas actuales la frontera colapsa en un punto (§3.6), así que primero hay que
-relajar R3 y/o R4 para que aparezca un trade-off real que graficar.
+**(a) La presencia no es lineal en k.** La primera versión afirmaba que *"la
+relación es prácticamente lineal (`presencia_DC ≈ 44,44 % · k`)"*. No lo es: la
+forma cerrada es
+
+```
+presencia_campaña(k) = r_DC · k / (r_DC · k + r_AG) = 400k / (400k + 500)
+```
+
+una hipérbola. En k=0,5 la fórmula lineal predice 22,22 % contra un valor real de
+28,57 % — un error del 29 %. El código siempre estuvo bien; el error estaba en la
+lectura. Se agregó al script un control cruzado que compara cada punto del barrido
+contra la forma cerrada (error máximo actual: 7,2e-07).
+
+El error iba **a favor** de la conclusión: la curva es cóncava, así que Don Carlo
+retiene presencia *mejor* de lo que sugería la fórmula lineal.
+
+**(b) Faltaba la base instalada.** La primera versión medía la presencia solo
+sobre los clientes captados por la campaña, lo que exageraba la caída de 3,2 a
+44,4 puntos y llevaba a la recomendación opuesta ("defender la paridad"). Se
+agregó `reportes.clientes_base()` y las dos métricas nuevas a la tabla y al
+gráfico.
+
+**Por qué pasó:** el modelo razona en *incrementos* — todo lo que optimiza son
+clientes nuevos y facturación incremental — así que es natural que al reportar se
+arrastre esa lógica incremental a una pregunta que en realidad es sobre *niveles*.
+Es un recordatorio para las preguntas c) y d): **antes de responder, chequear si
+la pregunta es sobre el cambio o sobre el total.**
+
+### 5.2. Pregunta c) — Market share vs. rentabilidad [RESUELTO]
+
+Corrida: `python scripts/03_pregunta_c.py` · 40 corridas del barrido, todas
+**Optimal**, y 15 controles cruzados en verde.
+
+**El giro respecto del plan.** El plan §12.c daba por sentado que había una curva
+que trazar: aplicar ε-constraint (`Max utilidad s.a. facturación ≥ ε`), barrer ε y
+graficar. Pero el punto a) ya había mostrado que **con las reglas vigentes los tres
+objetivos dan el mismo plan** (§3.6): la frontera de Pareto colapsa en un punto y
+el barrido no tiene nada que barrer.
+
+Eso no invalida la pregunta, la reformula. Si el directorio quiere entender su
+margen entre rentabilidad y participación, primero tiene que saber que **hoy no
+tiene margen ninguno**, y después ver cuánto aparecería si aflojara sus propias
+reglas. Por eso el barrido se corre en **cuatro escenarios**:
+
+| Escenario | Qué se desactiva |
+|---|---|
+| Reglas actuales | nada (el caso real) |
+| Sin R3 | el piso del 30 % para Triguetti |
+| Sin R4 | la obligación de darle a Rena el doble de Candealix + Triguetti |
+| Sin R3 ni R4 | las dos |
+
+#### Resultado
+
+| Escenario | Share mín. | Share máx. | Puntos en juego | Utilidad máx. | Utilidad en share máx. | Costo medio por punto |
+|---|---:|---:|---:|---:|---:|---:|
+| **Reglas actuales** | 61,91 % | 61,91 % | **0,00** | 76.578,60 | 76.578,60 | — |
+| Sin R3 | 65,56 % | 65,92 % | 0,36 | 80.100,96 | 79.817,31 | $796MM |
+| Sin R4 | 63,92 % | 65,10 % | **1,18** | 79.296,92 | 78.251,11 | $883MM |
+| Sin R3 ni R4 | 65,52 % | 66,22 % | 0,70 | 80.253,43 | 79.882,02 | $529MM |
+
+*(40 puntos de frontera en `resultados/tablas/08_pregunta_c_frontera_pareto.csv`,
+resumen en `09_pregunta_c_resumen_tradeoff.csv`, gráfico en
+`resultados/graficos/03_frontera_pareto.png`)*
+
+Referencia útil para leer la tabla: el mercado total de pastas es de $1.657.100MM,
+así que **1 punto de market share = $16.571MM de facturación**.
+
+#### Hallazgo 1 — hoy no hay trade-off que negociar
+
+Con las reglas vigentes la frontera es un punto: 61,91 % de share y $76.578,60MM
+de utilidad. Accionistas y gerentes quieren cosas distintas, pero **el plan óptimo
+es el mismo para los dos**, porque R3 y R4 ya consumen $15.300 de los $17.000 y no
+dejan margen de decisión (§7.2 del plan).
+
+La discusión del directorio, tal como está planteada, no tiene objeto. No es que
+haya que elegir entre rentabilidad y participación: es que **con estas reglas no
+hay nada que elegir**.
+
+#### Hallazgo 2 — el plan vigente está *dominado*, no es una elección conservadora
+
+Esto es lo más fuerte del punto c) y se ve de un vistazo en el gráfico: el punto
+del plan vigente queda **abajo y a la izquierda de las tres curvas**. Todos los
+escenarios relajados le ganan **en los dos criterios a la vez**:
+
+```
+Reglas actuales  ->  61,91 % de share  y  $76.579MM de utilidad
+Sin R3 ni R4     ->  65,52 % de share  y  $80.253MM de utilidad
+                     (+3,6 puntos            +$3.675MM)
+```
+
+No hay ningún sentido en el que el plan actual sea "la opción prudente": es
+sencillamente peor. Las reglas del directorio no están comprando rentabilidad a
+cambio de participación ni al revés — **están dejando las dos cosas sobre la mesa**.
+
+#### Hallazgo 3 — el precio del share no es constante: la curva "Sin R4" se quiebra
+
+El precio sombra del piso de facturación (columna
+`Costo marginal por punto de share ($MM)`) dice cuánto cuesta el punto siguiente,
+no el promedio. En dos escenarios es constante, pero en **Sin R4** salta:
+
+| Tramo | Share | Costo marginal por punto |
+|---|---|---:|
+| Primero | 63,92 % → 64,90 % | **$529MM** |
+| Último | 65,00 % → 65,10 % | **$3.365MM** |
+
+Un salto de **6,4 veces**. Es el "quiebre" que el plan §12.c pedía identificar, y
+tiene una lectura clara: los primeros puntos de participación se compran barato
+reasignando plata entre marcas, pero los últimos exigen empujar a Rena Speziale
+contra el techo del segmento alto, que ya está saturado (§3.4). Ahí cada peso
+adicional compra cada vez menos clientes y la utilidad se desploma.
+
+#### Respuesta a la pregunta del enunciado
+
+> *"Le han pedido un informe para poder entender cuál es la posibilidad de
+> crecimiento de market share de la empresa contra el crecimiento en rentabilidad."*
+
+1. **Con las reglas actuales, la posibilidad de crecimiento es cero en ambas
+   dimensiones simultáneamente**: el plan está fijado por R3 y R4, no por la
+   optimización.
+2. **El conflicto entre accionistas y gerentes es aparente.** No hay que elegir un
+   objetivo: hay que revisar las reglas. Levantando R3 y R4 la empresa gana
+   **+3,6 puntos de participación y +$3.675MM de utilidad al mismo tiempo**.
+3. **Recién después de eso aparece un trade-off real**, y es chico: como máximo
+   **1,18 puntos de participación negociables** (escenario Sin R4), a un costo que
+   arranca en $529MM por punto y trepa a $3.365MM en el último tramo.
+4. En términos de negocio: **la pelea vale mucho menos de lo que el directorio
+   cree.** Todo el margen de discusión entre las dos posturas cabe en poco más de
+   un punto de participación, mientras que la plata que dejan sobre la mesa por no
+   revisar sus propias reglas es tres veces más grande.
+
+#### Detalles de implementación
+
+- **Margen numérico en el último ε.** Pedir exactamente la facturación máxima
+  devuelve `Infeasible`: el óptimo la alcanza, pero la tolerancia de factibilidad
+  de CBC deja el piso unas millonésimas por encima de lo alcanzable. Medido sobre
+  este modelo, con 1e-3 $MM de margen todavía falla y con 1e-2 resuelve. Se usa un
+  margen **relativo** (1e-7 del valor, ~0,11 $MM) para que el borde siga
+  funcionando si cambian las magnitudes. Es el mismo tipo de problema que la
+  tolerancia de los controles cruzados (§2.5).
+- **El dual como unidad de negocio.** El precio sombra de `EPS_facturacion` viene
+  en $MM de utilidad por $MM de facturación, que no le dice nada a nadie. Se lo
+  multiplica por $16.571MM (un punto de share) para reportarlo como "cuánto cuesta
+  un punto de participación".
+- **El primer punto de cada frontera se excluye del costo marginal**: ahí el piso
+  de facturación todavía no ata y el dual es 0 por construcción, no porque el share
+  sea gratis.
 
 ### 5.3. Pregunta d) — El 30 % obligatorio en Triguetti
 
@@ -384,7 +545,44 @@ Los cinco duales no nulos se derivaron a mano y coinciden **a cinco decimales**:
 Es la verificación más fuerte que se hizo: que los duales se puedan reconstruir con
 aritmética de servilleta confirma que el modelo dice lo que creemos que dice.
 
-### 6.4. R6 — umbral de Candealix
+### 6.4. Barrido de la pregunta b) — `02_pregunta_b.py`
+
+6 de 6 controles OK. El más importante compara cada punto del barrido contra la
+**forma cerrada** de la presencia dentro de la campaña:
+
+```
+presencia(k) = 400k / (400k + 500)        error máximo: 7,2e-07
+```
+
+Los otros cinco: k=1 reproduce el caso base ($76.578,60), la utilidad es monótona
+al bajar k, Don Carlo + Agnellis suman siempre $1.700MM, la ganancia de k=1 a k=0
+es +$609,88MM (verificada a mano: `1.700 × 1,5375 − 850 × (0,82 + 1,5375)`), y la
+presencia real se mueve menos de 5 puntos en todo el barrido.
+
+El control de la forma cerrada se agregó **después** de haber documentado esa
+relación como lineal (§5.1, corrección (a)). Es el patrón que ya apareció con R6 y
+con los duales: cuando una afirmación del informe se puede escribir como una
+fórmula, conviene que el script la chequee en vez de confiar en la lectura de la
+tabla.
+
+### 6.5. Fronteras de la pregunta c) — `03_pregunta_c.py`
+
+15 de 15 controles OK. Tres son propiedades que **toda** frontera de Pareto tiene
+que cumplir, y se chequean por escenario:
+
+- la utilidad nunca sube al exigir más facturación (si subiera, el punto anterior
+  no era eficiente);
+- la facturación sí crece a lo largo del barrido;
+- el dual del piso de facturación es <= 0 (exigir más ventas nunca puede *mejorar*
+  la utilidad).
+
+El cuarto es el más fuerte: **los dos extremos de cada barrido tienen que coincidir
+con los óptimos obtenidos por separado**, resolviendo `Max utilidad` y
+`Max facturación` sin ε-constraint. Si no coincidieran, el piso de facturación
+estaría mal construido y toda la frontera sería ficción. Coinciden en los cuatro
+escenarios.
+
+### 6.6. R6 — umbral de Candealix
 
 **Confirmada la hipótesis del plan §7.3: la restricción NO está activa.** Candealix vende
 **43.666.667 paquetes** con inversión cero (solo su facturación base), contra un umbral de

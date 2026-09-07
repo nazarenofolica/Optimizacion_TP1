@@ -47,12 +47,30 @@ def titulo(texto, caracter="="):
 
 
 def fila_de(k, res):
+    """Una fila del barrido, con las DOS métricas de presencia.
+
+    La distinción es el corazón de la respuesta (ver procedimiento.md §5.1):
+
+    - "solo campaña" mide la presencia dentro de los clientes que la publicidad
+      de este año capta. Es la métrica sensible a k, pero ignora que Don Carlo
+      arranca con 7,5 millones de clientes.
+    - "base + campaña" mide la presencia en el mercado real, sumando la base
+      instalada. Es la que responde lo que pregunta el enunciado.
+    """
     params = res["params"]
     _base, _incremental, total = reportes.facturacion(res)
     clientes = reportes.clientes_captados(res)
+    base_cl = reportes.clientes_base(params)
     mercado_total = datos.mercado_total(params)
+    tam_bajo = params["mercado"]["bajo"]["tam"]
+
     cl_dc, cl_ag = clientes["DC"], clientes["AG"]
-    presencia_dc = cl_dc / (cl_dc + cl_ag) if (cl_dc + cl_ag) else float("nan")
+    tot_dc, tot_ag = base_cl["DC"] + cl_dc, base_cl["AG"] + cl_ag
+
+    nuevos = cl_dc + cl_ag
+    presencia_campana = cl_dc / nuevos if nuevos else float("nan")
+    presencia_real = tot_dc / (tot_dc + tot_ag)
+
     holgura_r5 = res["holguras"].get("R5_tope_gama_baja")
     return {
         "k": k,
@@ -60,12 +78,55 @@ def fila_de(k, res):
         "Agnellis ($MM)": res["x"]["AG"],
         "Clientes Don Carlo": cl_dc,
         "Clientes Agnellis": cl_ag,
-        "Presencia relativa Don Carlo (%)": 100 * presencia_dc,
+        "Presencia DC solo campaña (%)": 100 * presencia_campana,
+        "Presencia DC base+campaña (%)": 100 * presencia_real,
+        "Share DC en segmento bajo (%)": 100 * tot_dc / tam_bajo,
         "Utilidad neta ($MM)": res["Z"],
         "Market share (%)": 100 * sum(total.values()) / mercado_total,
         "R5 holgura (clientes)": holgura_r5,
         "R5 activa": holgura_r5 is not None and abs(holgura_r5) < 1e-6,
     }
+
+
+def verificar(tabla, params):
+    """Controles cruzados del barrido, al estilo de 01_modelo_base.py.
+
+    El más importante es el primero: la presencia dentro de la campaña NO es
+    lineal en k, es la hipérbola r_DC·k / (r_DC·k + r_AG). Documentarla como
+    lineal fue el error que originó esta corrección.
+    """
+    tasas = {cod: params["tasas"][cod][0]["tasa"] for cod in ("DC", "AG")}
+    r_dc, r_ag = tasas["DC"], tasas["AG"]
+
+    def cerrada(k):
+        return 100 * r_dc * k / (r_dc * k + r_ag)
+
+    err_forma = max(
+        abs(f["Presencia DC solo campaña (%)"] - cerrada(f["k"]))
+        for _, f in tabla.iterrows()
+    )
+    z = tabla["Utilidad neta ($MM)"]
+    base, libre = tabla.iloc[0], tabla.iloc[-1]
+
+    controles = [
+        (f"Presencia campaña = {r_dc}k/({r_dc}k+{r_ag}) (err max {err_forma:.2e})",
+         err_forma < 1e-6),
+        ("k=1 reproduce el caso base ($76.578,60)",
+         abs(base["Utilidad neta ($MM)"] - 76_578.60) < 0.01),
+        ("La utilidad crece al bajar k (monótona)",
+         all(z.iloc[i] <= z.iloc[i + 1] + 1e-6 for i in range(len(z) - 1))),
+        ("Don Carlo + Agnellis = $1.700MM en todo el barrido",
+         all(abs(f["Don Carlo ($MM)"] + f["Agnellis ($MM)"] - 1_700) < 1e-3
+             for _, f in tabla.iterrows())),
+        ("Ganancia de k=1 a k=0 = +$609,88MM",
+         abs((libre["Utilidad neta ($MM)"] - base["Utilidad neta ($MM)"]) - 609.875) < 0.01),
+        ("La presencia real (base+campaña) se mueve menos de 5 puntos",
+         abs(base["Presencia DC base+campaña (%)"]
+             - libre["Presencia DC base+campaña (%)"]) < 5),
+    ]
+    for descripcion, ok in controles:
+        print(f"  [{'OK ' if ok else 'MAL'}] {descripcion}")
+    return all(ok for _, ok in controles)
 
 
 def main():
@@ -87,6 +148,11 @@ def main():
 
     tabla = pd.DataFrame(filas)
 
+    titulo("VERIFICACIÓN DEL BARRIDO", "-")
+    if not verificar(tabla, construir_params()):
+        print("\nERROR: falló un control cruzado. No usar estos números.")
+        return 1
+
     titulo("TABLA: UTILIDAD Y REPARTO DON CARLO / AGNELLIS SEGÚN k", "-")
     print(tabla.to_string(index=False))
 
@@ -101,9 +167,29 @@ def main():
         f"${libre['Don Carlo ($MM)']:,.2f} MM\n"
         f"  Agnellis        : ${base['Agnellis ($MM)']:,.2f} MM -> "
         f"${libre['Agnellis ($MM)']:,.2f} MM\n"
-        f"  Presencia relativa de Don Carlo (dentro del par DC+AG): "
-        f"{base['Presencia relativa Don Carlo (%)']:.2f}% -> "
-        f"{libre['Presencia relativa Don Carlo (%)']:.2f}%"
+    )
+
+    titulo("LAS DOS MEDIDAS DE 'PRESENCIA' DE DON CARLO", "-")
+    caida = lambda col: base[col] - libre[col]
+    print(
+        "  El enunciado pide evitar una 'pérdida significativa de su presencia'.\n"
+        "  Según cómo se mida, la respuesta cambia por completo:\n\n"
+        f"  {'':34s}k=1,00    k=0,00      cae\n"
+        f"  {'Solo la campaña de este año':34s}"
+        f"{base['Presencia DC solo campaña (%)']:6.2f}%   "
+        f"{libre['Presencia DC solo campaña (%)']:6.2f}%   "
+        f"{caida('Presencia DC solo campaña (%)'):6.2f} pts\n"
+        f"  {'Base instalada + campaña':34s}"
+        f"{base['Presencia DC base+campaña (%)']:6.2f}%   "
+        f"{libre['Presencia DC base+campaña (%)']:6.2f}%   "
+        f"{caida('Presencia DC base+campaña (%)'):6.2f} pts\n"
+        f"  {'Share del segmento bajo':34s}"
+        f"{base['Share DC en segmento bajo (%)']:6.2f}%   "
+        f"{libre['Share DC en segmento bajo (%)']:6.2f}%   "
+        f"{caida('Share DC en segmento bajo (%)'):6.2f} pts\n\n"
+        "  Don Carlo tiene 7.525.000 clientes de base y la campaña entera mueve\n"
+        "  340.000 (el 4,5%). Medida sobre el mercado real, su presencia casi no\n"
+        "  se mueve aunque no reciba un solo peso."
     )
 
     activa = tabla[tabla["R5 activa"]]

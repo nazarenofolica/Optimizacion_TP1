@@ -34,6 +34,24 @@ def clientes_captados(res):
     )
 
 
+def clientes_base(params):
+    """Clientes que cada marca ya tiene, antes de la campaña, en su segmento.
+
+    Bajo el supuesto S2 (el cliente vuelca todo su gasto anual en pastas en una
+    sola marca), la participación en facturación de la Fig. 2 equivale a la
+    participación en clientes, así que `share x TAM` da la base instalada.
+
+    Hace falta para medir "presencia" como la entiende el enunciado: la posición
+    de una marca en su mercado, no solo lo que la campaña de este año le agrega.
+    Don Carlo arranca con 7.525.000 clientes; la campaña mueve 340.000. Ignorar
+    la base exagera el efecto de la publicidad en un orden de magnitud.
+    """
+    return {
+        cod: prod["share"][prod["segmento"]] * params["mercado"][prod["segmento"]]["tam"]
+        for cod, prod in params["productos"].items()
+    }
+
+
 def desperdicio(res):
     """Inversión que no capta a nadie, por marca, en $MM.
 

@@ -58,7 +58,7 @@ Con ese reparto la empresa pasa de vender el **48 %** de los fideos del país al
 
 ---
 
-## Las tres cosas importantes que descubrimos
+## Las cuatro cosas importantes que descubrimos
 
 ### 1. Se tiran $1.630 millones a la basura
 
@@ -69,16 +69,37 @@ Con $8.570 millones ya se les vendió a **todas**.
 Los $1.630 millones que sobran hay que gastarlos igual (lo manda la regla) pero **no traen ni
 un cliente más**. Es casi el 10 % del presupuesto tirado.
 
-### 2. La pelea del directorio no tiene sentido (por ahora)
+### 2. La pelea del directorio no tiene sentido
 
 Acordate de la pelea: accionistas quieren ganancia, gerentes quieren ventas. Probamos las dos
-cosas por separado.
+cosas por separado y **dan exactamente el mismo reparto**. Con las reglas que hay no queda
+margen para elegir: el directorio ya decidió todo con sus tres reglas.
 
-**Dan exactamente el mismo reparto.** Con las reglas que hay, no hay nada que discutir: el
-directorio ya decidió todo con sus tres reglas y no queda margen para elegir. La pelea recién
-existiría si aflojaran las reglas.
+Y hay algo peor. Cuando probamos qué pasaría si sacaran esas reglas, resultó que la empresa
+**ganaría las dos cosas al mismo tiempo**: más ventas Y más ganancia.
 
-### 3. La regla de Triguetti es carísima
+```
+Como está hoy         62 % del mercado   y   $76.579 millones de ganancia
+Sacando dos reglas    66 % del mercado   y   $80.253 millones de ganancia
+```
+
+O sea que las reglas del directorio no están eligiendo una cosa a costa de la otra.
+**Están dejando las dos sobre la mesa.** El plan actual no es "el prudente": es
+sencillamente peor que las alternativas.
+
+### 3. Y aunque saquen las reglas, hay poco para pelear
+
+Recién ahí aparece una decisión real entre vender más o ganar más. Pero es chica:
+como mucho **un punto y pico de mercado** está en juego. Los primeros pedacitos de
+mercado salen unos $529 millones cada uno; los últimos, $3.365 millones —
+seis veces más caros, porque para conseguirlos hay que empujar a Rena Speziale
+contra ese techo del que hablamos en el punto 1.
+
+En criollo: **la discusión vale mucho menos de lo que el directorio cree**, y la plata
+que están dejando escapar por no revisar sus propias reglas es tres veces más grande
+que todo lo que están discutiendo.
+
+### 4. La regla de Triguetti es carísima
 
 Obligar a poner el 30 % en Triguetti cuesta plata, pero no por Triguetti en sí. Es porque
 **cada peso que va a Triguetti obliga a poner dos pesos más en Rena Speziale** (por la regla 3),
@@ -87,6 +108,7 @@ y esa plata ya vimos que no sirve para nada.
 Si se sacara esa regla, la empresa ganaría unos **$3.500 millones más al año**.
 
 ---
+
 
 ## Un problema que encontramos y arreglamos
 
@@ -104,13 +126,13 @@ aclararlo en el informe**.
 
 | # | Tarea | Comentario |
 |---|---|---|
-| 1 | **Probar si nuestras suposiciones aguantan** | Hay datos que el enunciado no da y tuvimos que inventarlos con criterio. Hay que probar qué pasa si estuviéramos equivocados. **Esto va primero.** |
-| 2 | Pregunta b) — ¿qué pasa si Agnellis crece? | Depende de la tarea 1 |
-| 3 | Pregunta c) — ventas contra ganancia | Ya sabemos la respuesta corta (ver punto 2 de arriba), falta desarrollarla |
-| 4 | Pregunta d) — ¿está mal la regla del 30 %? | Ya tenemos los números, falta escribirlo |
-| 5 | Hacer los gráficos | No hay ninguno todavía |
-| 6 | Dibujar el esquema del proceso | A mano, en draw.io o similar |
-| 7 | Escribir el informe | Al final |
+| ✅ | Pregunta b) — ¿qué pasa si Agnellis crece? | **Hecha.** Resulta que Don Carlo casi no pierde nada, porque ya tiene 7,5 millones de clientes y la campaña mueve 340.000 |
+| ✅ | Pregunta c) — ventas contra ganancia | **Hecha.** Es el punto 2 y 3 de arriba |
+| 1 | **Probar si nuestras suposiciones aguantan** | Hay datos que el enunciado no da y tuvimos que inventarlos con criterio. Hay que probar qué pasa si estuviéramos equivocados |
+| 2 | Pregunta d) — ¿está mal la regla del 30 %? | Ya tenemos los números, falta escribirlo |
+| 3 | Faltan dos gráficos | Ya hay dos hechos, faltan los de la pregunta d) y el de las suposiciones |
+| 4 | Dibujar el esquema del proceso | A mano, en draw.io o similar |
+| 5 | Escribir el informe | Al final |
 
 ---
 
@@ -125,9 +147,12 @@ comunes.
 pip install -r requirements.txt
 python scripts/00_verificar_datos.py
 python scripts/01_modelo_base.py
+python scripts/02_pregunta_b.py
+python scripts/03_pregunta_c.py
 ```
 
-El primero revisa que los datos estén bien cargados. El segundo hace la cuenta e imprime todo.
+El primero revisa que los datos estén bien cargados. Los otros tres hacen las cuentas,
+imprimen todo y dejan los gráficos en `resultados/graficos/`.
 
 ---
 
@@ -138,6 +163,7 @@ El primero revisa que los datos estén bien cargados. El segundo hace la cuenta 
 | `Consigna/` | el enunciado del TP |
 | `Material/` | las clases del profesor |
 | `resultados/tablas/` | **las tablas con los resultados** (abrilas con Excel) |
+| `resultados/graficos/` | **los gráficos** en PNG, listos para el informe |
 | `src/` | la calculadora |
 | `scripts/` | los dos programas que se ejecutan |
 
