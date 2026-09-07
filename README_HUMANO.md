@@ -124,15 +124,19 @@ aclararlo en el informe**.
 
 ## Qué falta hacer
 
+**Nada — el TP está terminado.** El informe final ya está escrito y listo para
+entregar: [`informe/informe.pdf`](informe/informe.pdf) (fuente en
+`informe/informe.tex`).
+
 | # | Tarea | Comentario |
 |---|---|---|
-| ✅ | Pregunta b) — ¿qué pasa si Agnellis crece? | **Hecha.** Resulta que Don Carlo casi no pierde nada, porque ya tiene 7,5 millones de clientes y la campaña mueve 340.000 |
-| ✅ | Pregunta c) — ventas contra ganancia | **Hecha.** Es el punto 2 y 3 de arriba |
-| 1 | **Probar si nuestras suposiciones aguantan** | Hay datos que el enunciado no da y tuvimos que inventarlos con criterio. Hay que probar qué pasa si estuviéramos equivocados |
-| 2 | Pregunta d) — ¿está mal la regla del 30 %? | Ya tenemos los números, falta escribirlo |
-| 3 | Faltan dos gráficos | Ya hay dos hechos, faltan los de la pregunta d) y el de las suposiciones |
-| 4 | Dibujar el esquema del proceso | A mano, en draw.io o similar |
-| 5 | Escribir el informe | Al final |
+| ✅ | Pregunta b) — ¿qué pasa si Agnellis crece? | Don Carlo casi no pierde nada: ya tiene 7,5 millones de clientes y la campaña mueve 340.000 |
+| ✅ | Pregunta c) — ventas contra ganancia | Hoy no hay nada que discutir: las tres miradas dan el mismo plan. El conflicto solo aparece si se aflojan las reglas del directorio |
+| ✅ | Pregunta d) — ¿está mal la regla del 30 %? | Sí sale cara (~$3.500 millones al año), pero el culpable real es el arrastre a Rena Speziale, no Triguetti. Y pasado el 33 % del presupuesto, ¡el problema deja de tener solución! |
+| ✅ | Probar si nuestras suposiciones aguantan | De 14 números que tuvimos que inventar, solo uno mueve el plan, y en un caso límite. El resultado es robusto |
+| ✅ | Gráficos | 6 gráficos en total, todos en `resultados/graficos/` |
+| ✅ | Esquema del proceso | Dibujado prolijo, dentro del informe (con TikZ) |
+| ✅ | Escribir el informe | Redactado y compilado a PDF |
 
 ---
 
@@ -149,9 +153,11 @@ python scripts/00_verificar_datos.py
 python scripts/01_modelo_base.py
 python scripts/02_pregunta_b.py
 python scripts/03_pregunta_c.py
+python scripts/04_pregunta_d.py
+python scripts/05_tests_supuestos.py
 ```
 
-El primero revisa que los datos estén bien cargados. Los otros tres hacen las cuentas,
+El primero revisa que los datos estén bien cargados. Los otros cinco hacen las cuentas,
 imprimen todo y dejan los gráficos en `resultados/graficos/`.
 
 ---
@@ -164,8 +170,9 @@ imprimen todo y dejan los gráficos en `resultados/graficos/`.
 | `Material/` | las clases del profesor |
 | `resultados/tablas/` | **las tablas con los resultados** (abrilas con Excel) |
 | `resultados/graficos/` | **los gráficos** en PNG, listos para el informe |
+| `informe/` | **el informe final**, en PDF y en LaTeX |
 | `src/` | la calculadora |
-| `scripts/` | los dos programas que se ejecutan |
+| `scripts/` | los programas que se ejecutan |
 
 Y tres documentos escritos:
 
@@ -181,12 +188,7 @@ conocidas". Hay cosas del plan que quedaron viejas y están corregidas ahí.
 
 ---
 
-## Un tema para hablar entre nosotros
+## Para entregar
 
-En el repositorio hay dos estructuras de carpetas distintas:
-
-- `codigo/`, `docs/`, `outputs/` — las creó Pedro (por ahora vacías)
-- `src/`, `scripts/`, `resultados/` — las que tienen el trabajo hecho
-
-**Hay que ponerse de acuerdo en cuál usamos** antes de seguir, o vamos a terminar con dos
-proyectos mezclados en el mismo repositorio.
+El archivo que se sube a la cátedra es [`informe/informe.pdf`](informe/informe.pdf).
+Todo lo demás (código, tablas, gráficos) es el respaldo de cómo se llegó a esos números.

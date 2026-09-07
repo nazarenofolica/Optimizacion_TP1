@@ -170,17 +170,22 @@ def construir(params, objetivo="neta", epsilon=None, desactivar=()):
     # --- R10: saturación física del mercado ---------------------------------
     # No sale del enunciado. Sin ella el modelo capta más clientes de los que el
     # segmento tiene y devuelve participaciones de más del 100% (procedimiento.md §2).
+    # La captación de cada marca se reparte entre segmentos según el supuesto S5
+    # (datos.segmentos_captacion): con la opción base ("posicionamiento") cada
+    # marca aporta el 100% de sus clientes nuevos a un único segmento, igual que
+    # antes; con "mix_fig2" aporta una fracción a cada segmento donde vende.
     cupos = datos.cupo_por_segmento(params)
+    pesos = {cod: dict(datos.segmentos_captacion(params, cod)) for cod in params["productos"]}
     for seg, cupo in cupos.items():
         nombre = f"R10_sat_{seg}"
         if nombre in desactivar:
             continue
         captacion = pulp.lpSum(
-            tramo["tasa"] * x[(cod, i)]
+            tramo["tasa"] * pesos[cod].get(seg, 0.0) * x[(cod, i)]
             for cod, i, tramo in lista_tramos
-            if params["productos"][cod]["segmento"] == seg
+            if seg in pesos[cod]
         )
-        if captacion:  # hay al menos una marca posicionada en ese segmento
+        if captacion:  # hay al menos una marca que capta en ese segmento
             prob += (captacion <= cupo, nombre)
 
     # --- ε-constraint: piso de facturación (pregunta c) ---------------------

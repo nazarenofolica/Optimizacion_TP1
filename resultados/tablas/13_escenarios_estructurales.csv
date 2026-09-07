@@ -1,0 +1,6 @@
+﻿Escenario,Z ($MM),ΔZ vs. base ($MM),ΔZ vs. base (%),¿Cambia el mix?,Nota
+Base (todas las lecturas adoptadas),76578.595,0.0,0.0,False,referencia
+S5 — captación repartida según mix Fig. 2 (opción B),76967.99160947108,389.3966094710777,0.5084927576316564,False,en vez de que cada marca capte 100% en su segmento de posicionamiento
+S7a — R3 sobre lo asignado (Σx_j) en vez de sobre $17.000MM,76578.595,0.0,0.0,False,solo difieren si el presupuesto no se agota; en el óptimo se agota siempre
+S7b — R4 como igualdad (Rena = 2·(Can+Tri)) en vez de piso,76578.595,0.0,0.0,False,una igualdad nunca puede mejorar a un óptimo que ya cumple la desigualdad con holgura nula
+S8 — descontando el presupuesto del funcional,59578.595,-17000.0,-22.19941486259966,False,mismo plan óptimo; solo cambia el número reportado (Z - $17.000MM)

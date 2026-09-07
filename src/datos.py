@@ -66,12 +66,48 @@ def tramos(params):
     ]
 
 
+def segmentos_captacion(params, cod):
+    """En qué segmento(s) capta clientes nuevos la marca `cod`, y con qué peso. (S5)
+
+    Supuesto S5 (plan §4.2), con dos lecturas:
+
+    - "posicionamiento" (opción A, la base): toda la captación incremental de una
+      marca va a un único segmento, el de su posicionamiento de producto
+      (`PRODUCTOS[cod]["segmento"]`). Es la lectura que sostiene el propio
+      enunciado cuando mide el tope de Don Carlo + Agnellis contra "el mercado
+      de menor poder adquisitivo".
+    - "mix_fig2" (opción B): se reparte según el mix de ventas ya observado en la
+      Fig. 2, normalizado a 1. Por ejemplo, Agnellis vende 18/5/2 en
+      bajo/medio/alto (share de la Fig. 2): un cliente nuevo de Agnellis se
+      reparte en esas mismas proporciones (18/25, 5/25, 2/25) entre los tres
+      segmentos. Es más fina pero no está sostenida por ningún dato adicional:
+      solo reinterpreta la Fig. 2 como si describiera también a los clientes
+      *nuevos*, no solo a la base instalada.
+
+    Returns
+    -------
+    list of (segmento, peso)
+        Los pesos suman 1.0.
+    """
+    prod = params["productos"][cod]
+    modo = params["supuestos"]["S5_segmento_captacion"]
+    if modo == "posicionamiento":
+        return [(prod["segmento"], 1.0)]
+    if modo == "mix_fig2":
+        total = sum(prod["share"].values())
+        return [(seg, sh / total) for seg, sh in prod["share"].items() if sh > 0]
+    raise ValueError(f"S5_segmento_captacion desconocido: {modo!r}")
+
+
 def facturacion_por_millon(params):
     """Facturación incremental que genera cada $MM invertido, por tramo. (plan §3.7)
 
-    f = tasa [clientes/$MM] x gasto_segmento [AR$/cliente] x beta / 1e6
+    f = tasa [clientes/$MM] x gasto_efectivo [AR$/cliente] x beta / 1e6
 
-    donde beta es la tasa de captura de billetera (supuesto S2).
+    donde beta es la tasa de captura de billetera (supuesto S2) y gasto_efectivo es
+    el promedio del gasto por segmento, ponderado por dónde capta la marca (S5).
+    Bajo la opción base de S5 ("posicionamiento") esto es simplemente el gasto del
+    único segmento de la marca.
 
     Returns
     -------
@@ -81,8 +117,10 @@ def facturacion_por_millon(params):
     beta = params["supuestos"]["S2_captura_billetera"]
     coefs = {}
     for cod, i, tramo in tramos(params):
-        segmento = params["productos"][cod]["segmento"]
-        gasto = params["mercado"][segmento]["gasto"]
+        gasto = sum(
+            peso * params["mercado"][seg]["gasto"]
+            for seg, peso in segmentos_captacion(params, cod)
+        )
         coefs[(cod, i)] = tramo["tasa"] * gasto * beta / MILLON
     return coefs
 

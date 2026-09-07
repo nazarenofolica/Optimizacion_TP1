@@ -4,8 +4,10 @@
 > resolver el modelo, incluyendo **en qué se apartó del plan y por qué**. El plan está en
 > [`plan_de_trabajo.md`](plan_de_trabajo.md) y **no se reescribe** para que coincida con esto.
 >
-> **Estado:** punto a) resuelto. Preguntas b) (§5.1) y c) (§5.2) resueltas.
-> Pendientes: tests de supuestos (§4) y pregunta d) (§5.3).
+> **Estado:** TP completo. Puntos a), b) y c) resueltos (§3, §5.1, §5.2),
+> pregunta d) resuelta (§5.3) y tests de supuestos corridos (§4). El informe
+> final está redactado en [`informe/informe.tex`](informe/informe.tex),
+> compilado a `informe/informe.pdf`.
 
 ---
 
@@ -275,12 +277,51 @@ y eso es justamente lo que hay que mostrar en c).
 
 ---
 
-## 4. Tests de supuestos
+## 4. Tests de supuestos [RESUELTO]
 
-*Pendiente.* Ver `plan_de_trabajo.md` §11. Al listado de parámetros a barrer hay que agregarle
-**`R10_tope_saturacion`** (probar 60 %, 70 %, 80 %, 100 %), que no existía cuando se escribió
-el plan y es de los que más pueden mover el resultado: el segmento alto queda saturado, así
-que bajar ese techo reduce directamente lo que Rena puede captar.
+Corrida: `python scripts/05_tests_supuestos.py`. Dos protocolos, tal como preveía
+`plan_de_trabajo.md` §11:
+
+**A. Barrido OAT ±30 %** sobre los 14 parámetros numéricos de S1 a S4 más
+`R10_tope_saturacion` (agregada en el punto a), no prevista en el plan original;
+se la barrió 70 %–100 %, ya que 100 % es cota dura). Salida: tabla
+`resultados/tablas/12_tornado_oat.csv` y gráfico
+`resultados/graficos/05_tornado_supuestos.png`.
+
+- **De los 14 parámetros, uno solo cambia el plan óptimo** dentro del rango, y en
+  un caso límite: el tope del 65 % de la gama baja (R5), solo en su extremo
+  inferior. El −30 % teórico (45,5 %) resultó **infactible** porque Don Carlo +
+  Agnellis ya ocupan el 53 % del segmento sin invertir un peso — el verdadero
+  piso de esa regla es el share ya instalado, no un −30 % genérico. Se ajustó el
+  extremo inferior del barrido a 55 % (el mínimo plausible por encima de ese
+  piso) y se documentó el motivo en la tabla.
+- Los que más mueven el **nivel** de la utilidad (sin tocar el mix): margen neto
+  de Triguetti (hasta ±8,65 %), tasa de captura de billetera S2 (±8,29 %,
+  asimétrico) y margen neto de Don Carlo (±6,56 %).
+- Conclusión para el informe: el plan del punto a) no depende de forma frágil de
+  los datos que había que completar con criterio propio.
+
+**B. Escenarios estructurales** (S5, S7, S8; R6 ya verificado en §6.4): se
+resolvió el modelo completo bajo cada lectura alternativa. Salida:
+`resultados/tablas/13_escenarios_estructurales.csv`.
+
+| Escenario | ΔZ vs. base | ¿Cambia el mix? |
+|---|---:|:---:|
+| S5 — mix Fig. 2 en vez de posicionamiento | +0,51 % | No |
+| S7a — R3 sobre lo asignado en vez de sobre $17.000MM | 0,00 % | No |
+| S7b — R4 en igualdad en vez de piso | 0,00 % | No |
+| S8 — presupuesto descontado del funcional | −22,20 %* | No |
+
+\* Mismo plan óptimo; solo cambia el número reportado ($Z - $17.000MM$).
+
+**Nota de implementación:** probar S5 en su lectura alternativa ("mix_fig2")
+exigió generalizar `datos.facturacion_por_millon` y la restricción R10 de
+`modelo.construir` para repartir la captación de cada marca entre varios
+segmentos con pesos (antes asumían un único segmento por marca). Con el
+supuesto base ("posicionamiento") el comportamiento es idéntico al de antes
+—verificado contra los resultados de §3 y §5.1, que no cambiaron un solo
+decimal—, así que no es un desvío del modelo, es una generalización que lo
+deja listo para las dos lecturas de S5.
 
 ## 5. Preguntas b), c) y d)
 
@@ -508,12 +549,45 @@ adicional compra cada vez menos clientes y la utilidad se desploma.
   de facturación todavía no ata y el dual es 0 por construcción, no porque el share
   sea gratis.
 
-### 5.3. Pregunta d) — El 30 % obligatorio en Triguetti
+### 5.3. Pregunta d) — El 30 % obligatorio en Triguetti [RESUELTO]
 
-*Pendiente.* Ya hay material fuerte: el precio sombra de R3 (−2,49225, §3.5) y
-el hallazgo de los $1.630MM estériles (§3.4). Falta correr
-`desactivar=["R3_triguetti_min"]` y el barrido de porcentaje (0 %, 10 %, 20 %,
-30 %, 40 %) para graficar utilidad vs. % mínimo exigido.
+Corrida: `python scripts/04_pregunta_d.py` · 5 controles cruzados en verde.
+Salidas: `resultados/tablas/10_pregunta_d_triguetti.csv`,
+`resultados/tablas/11_pregunta_d_test_s1.csv` y
+`resultados/graficos/04_utilidad_vs_pct_triguetti.png`.
+
+**Descomposición del precio sombra de R3 (−2,49225 $/$MM).** Se separó a mano
+en efecto directo (ganar Triguetti, perder 1 $MM del par gama baja: −0,135) y
+efecto arrastre (R4 obliga a poner 2 $MM más en Rena, ya saturada: −2,358). El
+**95 % del costo sale del arrastre, no de Triguetti**: su primer tramo (1,044)
+casi empata con el par gama baja (1,179).
+
+**Barrido del piso mínimo** (0 %, 10 %, 20 %, 30 % —base—, 40 %):
+
+| Piso | Triguetti | Rena | Estéril | Utilidad neta |
+|---:|---:|---:|---:|---:|
+| 0 % | 0 | 8.570 | 0 | 80.100,96 |
+| 10 % | 1.700 | 8.570 | 0 | 79.509,36 |
+| 20 % | 3.400 | 8.570 | 0 | 78.917,76 |
+| 30 % (base) | 5.100 | 10.200 | 1.630 | 76.578,60 |
+| 40 % | — | — | — | **Infeasible** |
+
+**Hallazgo no previsto en el plan:** el 40 % da directamente infactible, y no
+por casualidad. Con Candealix en su mínimo, R3+R4 exigen
+`Triguetti + Rena >= 3 x Triguetti >= 3 x (piso x $17.000)`, así que el piso no
+puede superar **1/3 = 33,33 %** sin que las dos reglas del directorio se
+contradigan entre sí — se puede deducir sin correr el solver. La regla vigente
+del 30 % está a apenas 3,3 puntos de ese límite.
+
+**Test de robustez (S1, 140–260 cl/$MM):** el costo de la regla se mueve entre
+$1.925MM y $5.120MM en todo el rango — la conclusión no depende del dato que
+el enunciado no da.
+
+**Respuesta:** el gerente tiene razón en el número (la regla cuesta ~$3.522MM/año,
++4,6 % de utilidad si se elimina, más $1.630MM de inversión estéril) pero el
+diagnóstico apunta mal: la culpa es de R4 (el arrastre a Rena), no de Triguetti.
+Y el modelo solo mide un año — lo que la regla protege (identidad de marca,
+presencia en góndola, poder de negociación) no está en el funcional.
 
 ---
 

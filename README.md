@@ -53,6 +53,8 @@ python scripts/00_verificar_datos.py # 31 asserts contra los números calculados
 python scripts/01_modelo_base.py     # resuelve el punto a) e imprime todo
 python scripts/02_pregunta_b.py      # pregunta b): barrido de la paridad Don Carlo/Agnellis
 python scripts/03_pregunta_c.py      # pregunta c): fronteras de Pareto por escenario
+python scripts/04_pregunta_d.py      # pregunta d): piso mínimo de Triguetti
+python scripts/05_tests_supuestos.py # tests ±30 % (tornado) + escenarios estructurales
 ```
 
 **Corré siempre `00` antes que `01`.** Verifica que las tablas derivadas (mercado,
@@ -60,8 +62,10 @@ facturación base, coeficientes del funcional) coincidan con los valores calcula
 Un share mal tipeado produce un óptimo perfectamente plausible y completamente equivocado;
 esos asserts lo detectan al instante.
 
-Salidas: por consola, 11 CSVs en [`resultados/tablas/`](resultados/tablas/) y los
-gráficos en [`resultados/graficos/`](resultados/graficos/).
+Salidas: por consola, 13 CSVs en [`resultados/tablas/`](resultados/tablas/) y los
+gráficos en [`resultados/graficos/`](resultados/graficos/). El informe final, ya redactado
+con estos resultados, está en [`informe/informe.tex`](informe/informe.tex)
+(compilado en `informe/informe.pdf`).
 
 ---
 
@@ -88,11 +92,17 @@ TP1_OPT/
 │   ├── 00_verificar_datos.py     verificación de datos (correr primero)
 │   ├── 01_modelo_base.py         punto a): plan de asignación
 │   ├── 02_pregunta_b.py          pregunta b): escenarios de Agnellis
-│   └── 03_pregunta_c.py         pregunta c): market share vs. rentabilidad
+│   ├── 03_pregunta_c.py          pregunta c): market share vs. rentabilidad
+│   ├── 04_pregunta_d.py          pregunta d): piso mínimo de Triguetti
+│   └── 05_tests_supuestos.py     tests ±30 % (tornado) + escenarios estructurales
 │
-└── resultados/
-    ├── tablas/                   CSVs generados
-    └── graficos/                 PNGs generados
+├── resultados/
+│   ├── tablas/                   CSVs generados
+│   └── graficos/                 PNGs generados
+│
+└── informe/
+    ├── informe.tex                informe final (LaTeX)
+    └── informe.pdf                informe final compilado — el entregable
 ```
 
 **Regla de oro de `config.py`:** están separados los **datos del enunciado** (no se tocan) de
@@ -155,15 +165,35 @@ salta a $3.365MM en el último tramo, cuando hay que empujar a Rena contra el te
 del segmento alto ya saturado. Detalle en [`procedimiento.md`](procedimiento.md) §5.2.
 
 
-### ❌ Pendiente
+### ✅ Hecho — Pregunta d) del caso (el 30 % obligatorio en Triguetti)
 
-| Tarea | Referencia | Nota |
-|---|---|---|
-| Tests de supuestos (±30 %, tornado) | plan §11 | El único que ya quedó testeado de facto es **S6** (es la pregunta b)) |
-| Pregunta d) — el 30 % de Triguetti | plan §12.d | Ya hay material: el dual de R3 y los $1.630MM estériles |
-| Gráficos adicionales (`src/graficos.py`) | — | Ya están `utilidad_vs_k_paridad` y `frontera_pareto`. Falta el tornado de sensibilidad y utilidad vs. % Triguetti |
-| Diagrama del proceso | plan §9 | Hay un ASCII; hay que redibujarlo prolijo (draw.io) |
-| Redacción del informe | plan §15 | El checklist mapea cada ítem pedido contra dónde se responde |
+Descomposición a mano del precio sombra de R3 (95 % del costo es el arrastre de
+R4 sobre Rena, no Triguetti en sí) más un barrido del piso (0–40 %)
+(`scripts/04_pregunta_d.py`).
+
+**Hallazgo no previsto en el plan:** arriba del **33,33 %** (=1/3) el modelo da
+directamente **Infeasible** — R3 y R4 combinadas exigen más presupuesto del que
+existe, deducible a mano sin correr el solver. La regla vigente del 30 % está a
+solo 3,3 puntos de ese límite. Detalle en [`procedimiento.md`](procedimiento.md) §5.3.
+
+### ✅ Hecho — Tests de supuestos (±30 %, tornado, escenarios estructurales)
+
+Barrido OAT sobre los 14 parámetros numéricos (S1-S4, R10) más 4 escenarios
+estructurales (S5, S7a, S7b, S8) (`scripts/05_tests_supuestos.py`).
+
+**Hallazgo:** de 14 parámetros, **uno solo** cambia el plan óptimo dentro de
+±30 %, y en un caso límite (R5, cuyo −30 % teórico resultó infactible porque
+pisa el share ya instalado). El plan del punto a) no depende de forma frágil
+de los datos que había que completar. Detalle en
+[`procedimiento.md`](procedimiento.md) §4.
+
+### ✅ Hecho — Informe final
+
+Redactado en [`informe/informe.tex`](informe/informe.tex) y compilado a
+`informe/informe.pdf`: cubre las 4 secciones del informe esperable por la
+cátedra (modelo, sensibilidad, esquema del proceso con diagrama en TikZ,
+librerías) y las 4 consultas del caso, con las tablas y los 6 gráficos de
+`resultados/`. Es el documento que se entrega.
 
 ---
 

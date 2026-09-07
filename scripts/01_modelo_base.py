@@ -20,7 +20,7 @@ if hasattr(sys.stdout, "reconfigure"):  # consola de Windows en cp1252
 
 import pandas as pd  # noqa: E402
 
-from src import datos, modelo, reportes  # noqa: E402
+from src import datos, graficos, modelo, reportes  # noqa: E402
 from src.config import ETIQUETA_OBJETIVO, construir_params  # noqa: E402
 
 SALIDA = RAIZ / "resultados" / "tablas"
@@ -152,6 +152,9 @@ def main():
         f"Ganancia de market share al hacerlo               : "
         f"{u_fact['Market share (%)'] - u_neta['Market share (%)']:+.4f} puntos"
     )
+
+    ruta_grafico = graficos.plan_base(t_com, t_can)
+    print(f"\nGráfico guardado en: {ruta_grafico.relative_to(RAIZ)}")
 
     # --- Guardado -----------------------------------------------------------
     tablas = {
