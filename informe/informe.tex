@@ -43,6 +43,19 @@
 \titlespacing*{\section}{0pt}{1.1em}{0.55em}
 \titlespacing*{\subsection}{0pt}{0.9em}{0.4em}
 
+% ---------- flotantes ------------------------------------------------------
+% El documento tiene 14 tablas y 6 figuras. Los valores por defecto de LaTeX
+% son conservadores (topfraction .7 / textfraction .2) y con esta densidad
+% empujan las tablas varias paginas lejos del texto que las comenta. Estos
+% valores permiten mas area de flotante por pagina sin llegar a paginas
+% compuestas solo de tablas.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{5}
+
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -241,10 +254,14 @@ S4 — tasas de captación      & \textbullet     & \textbullet\textbullet & \te
 S5 — segmento de captación   & \textbullet\textbullet & \textbullet\textbullet & \textbullet\textbullet & \textbullet \\
 S6 — lectura de la paridad   & \textbullet     & \textbullet\textbullet & $\circ$       & $\circ$ \\
 S7 — lectura de los pisos    & \textbullet     & $\circ$         & \textbullet     & \textbullet\textbullet \\
+S8 — presupuesto en el funcional & \textbullet & $\circ$         & \textbullet     & $\circ$ \\
 \bottomrule
 \end{tabular}
 \vspace{2mm}\\
 \small\textbullet\textbullet\ crítico \quad \textbullet\ relevante \quad $\circ$\ indiferente
+\vspace{1mm}\\
+\footnotesize S9 no aparece en la tabla porque no es un supuesto único sino un
+conjunto de decisiones menores, declaradas y no testeadas individualmente.
 \end{table}
 
 \subsection{Variables de decisión}
@@ -336,8 +353,8 @@ el operativo:
 Como el mercado total de pastas (\$1.657.100\,MM) es una constante, maximizar
 facturación es matemáticamente lo mismo que maximizar market share.
 
-Comparando 6.2 con 6.3, el \textbf{ranking de las marcas cambia según qué
-margen se use}: con margen neto, Don Carlo (0,82) es la peor inversión
+Comparando los dos funcionales de utilidad, el \textbf{ranking de las marcas
+cambia según qué margen se use}: con margen neto, Don Carlo (0,82) es la peor inversión
 marginal del portafolio; con margen operativo (1,476) le gana a Triguetti y al
 segundo tramo de Candealix. La elección del margen no es un detalle contable:
 cambia qué conviene priorizar, y por eso se corren y se comparan las dos
@@ -403,6 +420,7 @@ Marca & Facturación base (\$MM/año) & \% de la facturación \\
 \begin{table}[htbp]
 \centering\small
 \caption{Utilidad neta que genera cada \$MM invertido, por marca y tramo.}
+\label{tab:utilidad_millon}
 \begin{tabular}{lrr}
 \toprule
 Marca (tramo) & Facturación por \$MM & Utilidad neta por \$MM \\
@@ -419,7 +437,7 @@ Marca (tramo) & Facturación por \$MM & Utilidad neta por \$MM \\
 \end{tabular}
 \end{table}
 
-Tres lecturas se desprenden de esta última tabla sin resolver todavía nada:
+Tres lecturas se desprenden de la Tabla~\ref{tab:utilidad_millon} sin resolver todavía nada:
 Agnellis es la marca que más \emph{factura} por peso invertido, pero es Rena
 Speziale la que más \emph{gana}: capta pocos clientes, pero cada uno gasta
 \$134.000 al año y deja 10\,\% de margen neto —ahí está, en una sola tabla, el
@@ -871,7 +889,8 @@ Todo el trabajo se hizo en \textbf{Python 3.10}, con el siguiente stack:
   restricciones con nombre propio.
   \item \textbf{pandas}: construcción de las tablas de datos derivados y de
   resultados.
-  \item \textbf{matplotlib}: los seis gráficos del informe.
+  \item \textbf{matplotlib}: los cinco gráficos de resultados del informe (el
+  esquema del proceso de la Figura~\ref{fig:proceso} está hecho con Ti\emph{k}Z).
 \end{itemize}
 
 Todo el modelo se escribió \textbf{una sola vez}, como una función
@@ -1007,7 +1026,7 @@ Con esa aclaración, las dos preguntas del enunciado tienen respuesta directa:
   del portafolio.
 \end{itemize}
 
-En criollo: con estos números, la decisión de soltar o no la paridad no es
+En síntesis: con estos números, la decisión de soltar o no la paridad no es
 realmente una decisión económica —lo que está en juego es menos de un punto de
 utilidad—, sino una decisión sobre cuánto arriesgo comercial de imagen se
 quiere tomar a cambio de casi nada.
@@ -1068,7 +1087,7 @@ Tres lecturas se desprenden de este barrido:
   dimensiones a la vez}. Pasar a ``sin R3 ni R4'' sumaría 3,6 puntos de share
   \emph{y} \$3.675\,MM de utilidad, simultáneamente. No es que las reglas del
   directorio compren participación a costa de rentabilidad, ni al revés:
-  están dejando las dos cosas arriba de la mesa.
+  están dejando las dos cosas sobre la mesa.
   \item \textbf{El precio del share no es constante.} En el escenario ``sin
   R4'' el costo marginal de un punto adicional arranca en \$529\,MM y termina
   en \$3.365\,MM —un salto de 6,4 veces—: los primeros puntos de
@@ -1082,9 +1101,13 @@ rentabilidad contra participación, es que las propias reglas del directorio
 le impiden a la empresa tener las dos cosas a la vez}. La pelea entre
 accionistas y directivos no se resuelve eligiendo un objetivo por sobre el
 otro —bajo las reglas actuales da lo mismo—, se resuelve revisando esas
-reglas. Y aun así conviene bajar la expectativa: incluso liberando ambas
-restricciones a la vez, todo el margen de negociación disponible cabe en poco
-más de tres puntos de participación de mercado.
+reglas. Y aun así conviene bajar la expectativa sobre lo que queda para
+discutir después: liberando ambas restricciones, el margen de negociación
+real es de apenas \textbf{0,70 puntos} de participación, y aun en el escenario
+más favorable de los tres (sin R4) no supera los \textbf{1,18 puntos}. Es
+decir: lo grande está en revisar las reglas —3,6 puntos de participación y
+\$3.675\,MM de utilidad, sin resignar nada a cambio—, no en la negociación que
+viene después.
 
 \subsection{Consulta 4 — ¿Está mal la regla del 30\,\% obligatorio en Triguetti?}
 \label{sec:consulta4}
@@ -1135,7 +1158,7 @@ partir del 30\,\%.}
 Un dato llamativo del propio barrido: mientras el piso está en $10\,\%$ o
 $20\,\%$, Rena Speziale se queda en \$8.570\,MM —el óptimo que satura su
 segmento sin que R4 llegue a atar— y es Candealix, no Rena, la que absorbe el
-resto del presupuesto libre. R4 solo empieza a morder, y a arrastrar plata
+resto del presupuesto libre. R4 solo empieza a atar, y a arrastrar plata
 estéril hacia Rena, a partir del $30\,\%$. Bajar la regla de Triguetti al
 $20\,\%$, por ejemplo, no solo ahorraría el costo directo: eliminaría por
 completo la inversión estéril.

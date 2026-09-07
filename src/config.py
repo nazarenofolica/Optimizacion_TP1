@@ -7,7 +7,7 @@ dos bloques que conviene no mezclar:
   1. DATOS DEL ENUNCIADO  -> números que la consigna provee. No se tocan.
   2. SUPUESTOS PROPIOS    -> números que la consigna NO provee o deja ambiguos, y que
                              nosotros adoptamos con justificación (S1..S9 del
-                             plan_de_trabajo.md, §4).
+                             docs/plan_de_trabajo.md, §4).
 
 La distinción importa para el informe: lo que se defiende ante la cátedra son los
 supuestos, no los datos.
@@ -129,7 +129,7 @@ REGLAS = {
     "R6_umbral_candealix": 2_500_000,  # unidades mínimas para producir Candealix
     # R10 — Saturación física del mercado: nadie puede captar más clientes de los
     # que el segmento tiene. NO está en el enunciado; se agrega porque sin ella el
-    # modelo produce participaciones de más del 100% (ver procedimiento.md §2).
+    # modelo produce participaciones de más del 100% (ver docs/procedimiento.md §2).
     # 1.00 = hasta el 100% del TAM. Es una cota conservadora: el techo comercial
     # realista es más bajo, y por eso el valor queda parametrizado.
     "R10_tope_saturacion": 1.00,
@@ -137,7 +137,7 @@ REGLAS = {
 
 
 # ---------------------------------------------------------------------------
-# 2. SUPUESTOS PROPIOS  (plan_de_trabajo.md §4)
+# 2. SUPUESTOS PROPIOS  (docs/plan_de_trabajo.md §4)
 # ---------------------------------------------------------------------------
 
 SUPUESTOS = {

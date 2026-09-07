@@ -5,7 +5,7 @@ Se corre ANTES de optimizar. Un error de carga en una tabla (un share mal tipead
 un gasto con un cero de más) produce un óptimo perfectamente plausible y
 completamente equivocado; estos asserts lo detectan al instante.
 
-Los valores esperados son los del plan_de_trabajo.md §3.4 a §3.7 y §6.2 a §6.4.
+Los valores esperados son los del docs/plan_de_trabajo.md §3.4 a §3.7 y §6.2 a §6.4.
 
     python scripts/00_verificar_datos.py
 """

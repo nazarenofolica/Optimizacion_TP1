@@ -1,11 +1,11 @@
 ﻿Parámetro,Valor base,Valor -30%,Valor +30%,Z base ($MM),Z en -30% ($MM),Z en +30% ($MM),|ΔZ| máx ($MM),|ΔZ| máx (%),¿Cambia el mix en -30%?,¿Cambia el mix en +30%?,Nota
-S3 - Margen neto Triguetti,0.09,0.063,0.117,76578.595,69957.979,83199.211,6620.6159999999945,8.645517719409705,False,False,
+S3 - Margen neto Triguetti,0.09,0.063,0.117,76578.595,69957.97899999999,83199.211,6620.616000000009,8.645517719409725,False,False,
 S2 - Captura de billetera (%),1.0,0.7,1.0,76578.595,70231.4725,76578.595,6347.122499999998,8.288376797720039,False,False,asimétrico: no puede superar el 100%
-S3 - Margen neto Don Carlo,0.05,0.035,0.065,76578.595,71557.18000000001,81600.01,5021.414999999994,6.55720439895769,False,False,
+S3 - Margen neto Don Carlo,0.05,0.035,0.065,76578.595,71557.18,81600.01,5021.415000000008,6.557204398957709,False,False,
 R10 - Tope de saturación física,1.0,0.7,1.0,76578.595,71754.595,76578.595,4824.0,6.299410429245927,False,False,agregado en el punto a); no estaba en el plan original. Cota dura: 100%
-S3 - Margen neto Agnellis,0.075,0.0525,0.0975,76578.595,71852.4475,81304.74250000001,4726.147500000006,6.171629944372845,False,False,
+S3 - Margen neto Agnellis,0.075,0.0525,0.0975,76578.595,71852.4475,81304.7425,4726.147500000006,6.171629944372845,False,False,
 S3 - Margen neto Rena Speziale,0.1,0.07,0.13,76578.595,71859.595,81297.595,4719.0,6.162296396271047,False,False,
-S3 - Margen neto Candealix,0.08,0.056,0.104,76578.595,74692.195,78464.995,1886.3999999999942,2.463351540988698,False,False,
+S3 - Margen neto Candealix,0.08,0.056,0.104,76578.595,74692.19499999999,78464.995,1886.4000000000087,2.4633515409887172,False,False,
 S1 - Tasa Triguetti (cl/$MM),200.0,140.0,260.0,76578.595,74981.275,78175.915,1597.320000000007,2.085857020489873,False,False,único parámetro que el enunciado no da; rango 140-260 (tope duro: 300)
 S4 - Saturación Triguetti ($MM),6000.0,4200.0,7800.0,76578.595,75638.995,76578.595,939.6000000000058,1.2269747179352217,False,False,
 S4 - Tope 65% gama baja (R5),0.65,0.55,0.845,76578.595,76046.50334115,76578.595,532.0916588499967,0.694830792925878,True,False,"el -30% teórico (45,5%) es INFACTIBLE: Don Carlo + Agnellis ya ocupan 53% del segmento bajo aun sin invertir un peso, así que el piso real de esta regla es 53%; se usa 55% como el mínimo plausible por encima de ese piso"

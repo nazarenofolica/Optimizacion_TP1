@@ -1,6 +1,6 @@
 # Qué estamos haciendo, explicado fácil
 
-*(Este archivo es el resumen en criollo. El [`README.md`](README.md) es el técnico.)*
+*(Este archivo es el resumen en criollo. El [`README.md`](../README.md) es el técnico.)*
 
 ---
 
@@ -125,7 +125,7 @@ aclararlo en el informe**.
 ## Qué falta hacer
 
 **Nada — el TP está terminado.** El informe final ya está escrito y listo para
-entregar: [`informe/informe.pdf`](informe/informe.pdf) (fuente en
+entregar: [`informe/informe.pdf`](../informe/informe.pdf) (fuente en
 `informe/informe.tex`).
 
 | # | Tarea | Comentario |
@@ -174,21 +174,22 @@ imprimen todo y dejan los gráficos en `resultados/graficos/`.
 | `src/` | la calculadora |
 | `scripts/` | los programas que se ejecutan |
 
-Y tres documentos escritos:
+Y cuatro documentos escritos: el `README.md` está en la raíz del repositorio y los
+otros tres en la carpeta `docs/`.
 
 | Archivo | Para qué |
 |---|---|
-| **este** | el resumen fácil |
-| `README.md` | el técnico: cómo correr todo, qué hay hecho, las trampas |
-| `plan_de_trabajo.md` | lo que planeamos hacer antes de empezar |
-| `procedimiento.md` | lo que realmente pasó, con los resultados y los números |
+| [`README.md`](../README.md) | el técnico: cómo correr todo, qué hay hecho, las trampas |
+| **este** (`docs/guia-rapida.md`) | el resumen fácil |
+| [`docs/plan_de_trabajo.md`](plan_de_trabajo.md) | lo que planeamos hacer antes de empezar |
+| [`docs/procedimiento.md`](procedimiento.md) | lo que realmente pasó, con los resultados y los números |
 
-**Si vas a tocar el código, leé `README.md` primero** — sobre todo la parte de "trampas
+**Si vas a tocar el código, leé el `README.md` primero** — sobre todo la parte de "trampas
 conocidas". Hay cosas del plan que quedaron viejas y están corregidas ahí.
 
 ---
 
 ## Para entregar
 
-El archivo que se sube a la cátedra es [`informe/informe.pdf`](informe/informe.pdf).
+El archivo que se sube a la cátedra es [`informe/informe.pdf`](../informe/informe.pdf).
 Todo lo demás (código, tablas, gráficos) es el respaldo de cómo se llegó a esos números.

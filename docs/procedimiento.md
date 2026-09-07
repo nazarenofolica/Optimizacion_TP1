@@ -6,7 +6,7 @@
 >
 > **Estado:** TP completo. Puntos a), b) y c) resueltos (§3, §5.1, §5.2),
 > pregunta d) resuelta (§5.3) y tests de supuestos corridos (§4). El informe
-> final está redactado en [`informe/informe.tex`](informe/informe.tex),
+> final está redactado en [`informe/informe.tex`](../informe/informe.tex),
 > compilado a `informe/informe.pdf`.
 
 ---

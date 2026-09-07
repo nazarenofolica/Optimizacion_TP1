@@ -3,7 +3,7 @@ Punto c) — Crecimiento de market share contra crecimiento en rentabilidad.
 
 El directorio está partido: los accionistas quieren rentabilidad y los gerentes
 quieren facturación (sus bonos dependen de los ingresos). Este script cuantifica
-ese conflicto con el método ε-constraint (plan_de_trabajo.md §6.5):
+ese conflicto con el método ε-constraint (docs/plan_de_trabajo.md §6.5):
 
     Max  utilidad neta     sujeto a    facturación >= ε
 

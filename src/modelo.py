@@ -169,7 +169,7 @@ def construir(params, objetivo="neta", epsilon=None, desactivar=()):
 
     # --- R10: saturación física del mercado ---------------------------------
     # No sale del enunciado. Sin ella el modelo capta más clientes de los que el
-    # segmento tiene y devuelve participaciones de más del 100% (procedimiento.md §2).
+    # segmento tiene y devuelve participaciones de más del 100% (docs/procedimiento.md §2).
     # La captación de cada marca se reparte entre segmentos según el supuesto S5
     # (datos.segmentos_captacion): con la opción base ("posicionamiento") cada
     # marca aporta el 100% de sus clientes nuevos a un único segmento, igual que

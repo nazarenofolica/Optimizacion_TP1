@@ -1,7 +1,7 @@
 """
 Punto a) — Plan de asignación del presupuesto de marketing.
 
-Resuelve el modelo base con los tres funcionales del plan_de_trabajo.md §6 y
+Resuelve el modelo base con los tres funcionales del docs/plan_de_trabajo.md §6 y
 reporta el plan, el mix comercial, la distribución por canales y el estado de
 cada restricción.
 
@@ -41,7 +41,7 @@ def titulo(texto, caracter="="):
 
 
 def verificar_cotas(res):
-    """Control cruzado manual del óptimo (plan_de_trabajo.md §7.2).
+    """Control cruzado manual del óptimo (docs/plan_de_trabajo.md §7.2).
 
     Con R3 y R4 activas el espacio factible es chico y el resultado se puede
     verificar casi a mano. Si alguna de estas cotas falla, hay un error de modelado,
@@ -71,7 +71,7 @@ def verificar_cotas(res):
 
 
 def verificar_r6(res):
-    """R6: ¿Candealix supera las 2.500.000 unidades? (plan_de_trabajo.md §7.3)
+    """R6: ¿Candealix supera las 2.500.000 unidades? (docs/plan_de_trabajo.md §7.3)
 
     La hipótesis del plan es que la restricción NO está activa. Hay que confirmarlo
     con números, no asumirlo.

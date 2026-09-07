@@ -3,7 +3,7 @@ Tablas derivadas del modelo Pastarazzi.
 
 Todas las funciones son puras: reciben `params` (de config.construir_params) y no
 tocan estado global. Cada una implementa una de las tablas derivadas del
-plan_de_trabajo.md §3.4 a §3.7.
+docs/plan_de_trabajo.md §3.4 a §3.7.
 
 Unidades, para no perderse:
     - inversión, facturación y utilidad ...... millones de AR$  ($MM)
@@ -57,7 +57,7 @@ def tramos(params):
 
     `tramo` es el dict de config.TASAS: {"limite", "tasa", "etiqueta"}.
     El índice arranca en 1 para que los nombres de variable queden x_TRI1, x_TRI2...,
-    igual que en el plan_de_trabajo.md §5.2.
+    igual que en el docs/plan_de_trabajo.md §5.2.
     """
     return [
         (cod, i, tramo)
@@ -194,7 +194,7 @@ def cupo_por_segmento(params):
 
     Es el término independiente de R10, la restricción de saturación física del
     mercado. No sale del enunciado: se agrega porque sin ella el modelo capta más
-    clientes de los que el segmento tiene (ver procedimiento.md §2).
+    clientes de los que el segmento tiene (ver docs/procedimiento.md §2).
 
         (tope - share ocupado) x TAM
     """

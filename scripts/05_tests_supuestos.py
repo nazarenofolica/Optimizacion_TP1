@@ -1,5 +1,5 @@
 """
-Tests de robustez de los supuestos (plan_de_trabajo.md §11).
+Tests de robustez de los supuestos (docs/plan_de_trabajo.md §11).
 
 Responde la pregunta "¿importa lo que asumimos?" con dos protocolos distintos:
 

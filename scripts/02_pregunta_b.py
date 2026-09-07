@@ -2,7 +2,7 @@
 Punto b) — Escenarios en que Agnellis aumente su participación.
 
 La restricción R2 del modelo base lee la paridad Don Carlo/Agnellis como igualdad
-estricta (supuesto S6, plan_de_trabajo.md §4.2): x_DonCarlo = x_Agnellis. Esta
+estricta (supuesto S6, docs/plan_de_trabajo.md §4.2): x_DonCarlo = x_Agnellis. Esta
 pregunta es, literalmente, el test de ese supuesto: en lugar de la igualdad se
 parametriza x_DonCarlo = k * x_Agnellis y se barre k desde 1.0 (paridad total, el
 caso base del punto a) hasta 0.0 (toda la plata libre del par gama baja va a
@@ -49,7 +49,7 @@ def titulo(texto, caracter="="):
 def fila_de(k, res):
     """Una fila del barrido, con las DOS métricas de presencia.
 
-    La distinción es el corazón de la respuesta (ver procedimiento.md §5.1):
+    La distinción es el corazón de la respuesta (ver docs/procedimiento.md §5.1):
 
     - "solo campaña" mide la presencia dentro de los clientes que la publicidad
       de este año capta. Es la métrica sensible a k, pero ignora que Don Carlo
@@ -199,7 +199,7 @@ def main():
         print(
             "\n  R5 (tope 65% gama baja) no se activa en ningún escenario del "
             "barrido: el freno nunca es el mercado, es el presupuesto residual "
-            "que dejan libre R3 y R4 (ver procedimiento.md §3.5)."
+            "que dejan libre R3 y R4 (ver docs/procedimiento.md §3.5)."
         )
 
     ruta_grafico = graficos.utilidad_vs_k_paridad(tabla)

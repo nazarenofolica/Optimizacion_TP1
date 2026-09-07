@@ -91,7 +91,7 @@ def fila_piso(pct):
 def descomponer_costo_r3(params):
     """Separa el precio sombra de R3 en "efecto Triguetti" y "efecto arrastre a Rena".
 
-    Reconstrucción a mano (procedimiento.md §6.3, misma lógica que el resto de los
+    Reconstrucción a mano (docs/procedimiento.md §6.3, misma lógica que el resto de los
     duales del punto a): en el óptimo, R3 y R4 están activas y el único destino
     libre para un millón adicional es el par Don Carlo/Agnellis. Forzar un millón
     extra a Triguetti por R3 dispara, vía R4, dos millones extra obligatorios a

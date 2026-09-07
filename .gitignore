@@ -9,7 +9,15 @@ __pycache__/
 # Configuracion local del agente/editor (Claude Code) - no se comparte
 .claude/
 
+# VS Code: se ignora todo lo personal de la carpeta, MENOS settings.json, que
+# tiene la receta de compilacion de LaTeX y conviene que la compartan los dos.
+.vscode/*
+!.vscode/settings.json
+
 # LaTeX build artifacts (se compila localmente; solo se versiona el .tex y el .pdf final)
+# Los auxiliares van a informe/.aux/ por el -aux-directory de .vscode/settings.json;
+# los patrones sueltos quedan por si alguien compila sin esa opción.
+informe/.aux/
 informe/*.aux
 informe/*.log
 informe/*.out

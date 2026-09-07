@@ -13,20 +13,20 @@ Investigación de Operaciones I · UCA · 2026 2C
 
 | # | Archivo | Por qué |
 |---|---|---|
-| 0 | [`README_HUMANO.md`](README_HUMANO.md) | Resumen sin tecnicismos: qué es el problema, qué se hizo y qué falta. 5 minutos |
-| 1 | [`plan_de_trabajo.md`](plan_de_trabajo.md) | El problema, los datos, los supuestos y el modelo. Empezá por **§0** (aclara una trampa de la consigna) |
-| 2 | [`procedimiento.md`](procedimiento.md) **§2** | **Los desvíos respecto del plan.** El plan quedó desactualizado en cuatro secciones y la corrección vive acá |
-| 3 | [`procedimiento.md`](procedimiento.md) §3 y §5 | Los resultados obtenidos y las llamadas exactas para lo que falta |
+| 0 | [`docs/guia-rapida.md`](docs/guia-rapida.md) | Resumen sin tecnicismos: qué es el problema, qué se hizo y qué falta. 5 minutos |
+| 1 | [`docs/plan_de_trabajo.md`](docs/plan_de_trabajo.md) | El problema, los datos, los supuestos y el modelo. Empezá por **§0** (aclara una trampa de la consigna) |
+| 2 | [`docs/procedimiento.md`](docs/procedimiento.md) **§2** | **Los desvíos respecto del plan.** El plan quedó desactualizado en cuatro secciones y la corrección vive acá |
+| 3 | [`docs/procedimiento.md`](docs/procedimiento.md) §3 y §5 | Los resultados obtenidos y las llamadas exactas para lo que falta |
 
 > ⚠️ **El plan NO se corrige.** Es a propósito: el contraste entre lo que planeamos y lo que
 > pasó es material para el informe (criterio "Analizar" de la cátedra). Todo cambio se anota
-> en `procedimiento.md` §2, nunca reescribiendo el plan.
+> en `docs/procedimiento.md` §2, nunca reescribiendo el plan.
 
 ---
 
 ## Los dos documentos
 
-| | [`plan_de_trabajo.md`](plan_de_trabajo.md) | [`procedimiento.md`](procedimiento.md) |
+| | [`docs/plan_de_trabajo.md`](docs/plan_de_trabajo.md) | [`docs/procedimiento.md`](docs/procedimiento.md) |
 |---|---|---|
 | **Qué es** | El **esquema**: lo que pensamos hacer | La **bitácora**: lo que efectivamente pasó |
 | **Cuándo se escribió** | Antes de codificar | Durante y después de codificar |
@@ -73,10 +73,13 @@ con estos resultados, está en [`informe/informe.tex`](informe/informe.tex)
 
 ```
 TP1_OPT/
-├── README.md                     este archivo
-├── plan_de_trabajo.md            el esquema (lo que se planeó)
-├── procedimiento.md              la bitácora (lo que pasó)
+├── README.md                     este archivo (el único .md de la raíz)
 ├── requirements.txt
+│
+├── docs/
+│   ├── guia-rapida.md            el resumen sin tecnicismos
+│   ├── plan_de_trabajo.md        el esquema (lo que se planeó)
+│   └── procedimiento.md          la bitácora (lo que pasó)
 │
 ├── Consigna/                     el enunciado del TP
 ├── Material/                     clases 1, 2 y 3 de la cátedra
@@ -130,7 +133,7 @@ Tres hallazgos que van al informe:
 3. **R3 (el 30 % de Triguetti) es la restricción más cara**: −$2,49 de utilidad por millón,
    por el arrastre de R4.
 
-Detalle completo en [`procedimiento.md`](procedimiento.md) §3.
+Detalle completo en [`docs/procedimiento.md`](docs/procedimiento.md) §3.
 
 ### ✅ Hecho — Pregunta b) del caso (escenarios de Agnellis)
 
@@ -146,7 +149,7 @@ la campaña entera mueve 340.000.
 
 **Conclusión:** ni mantener la paridad ni romperla mueve la aguja. Se puede
 relajar para acompañar a Agnellis sin poner en riesgo real a Don Carlo.
-Detalle en [`procedimiento.md`](procedimiento.md) §5.1.
+Detalle en [`docs/procedimiento.md`](docs/procedimiento.md) §5.1.
 
 ### ✅ Hecho — Pregunta c) del caso (market share vs. rentabilidad)
 
@@ -162,7 +165,7 @@ no están comprando una cosa a cambio de la otra, están dejando las dos sobre l
 **Y el trade-off real, cuando aparece, es chico:** como máximo 1,18 puntos de
 participación negociables (sin R4), a un costo que arranca en $529MM por punto y
 salta a $3.365MM en el último tramo, cuando hay que empujar a Rena contra el techo
-del segmento alto ya saturado. Detalle en [`procedimiento.md`](procedimiento.md) §5.2.
+del segmento alto ya saturado. Detalle en [`docs/procedimiento.md`](docs/procedimiento.md) §5.2.
 
 
 ### ✅ Hecho — Pregunta d) del caso (el 30 % obligatorio en Triguetti)
@@ -174,7 +177,7 @@ R4 sobre Rena, no Triguetti en sí) más un barrido del piso (0–40 %)
 **Hallazgo no previsto en el plan:** arriba del **33,33 %** (=1/3) el modelo da
 directamente **Infeasible** — R3 y R4 combinadas exigen más presupuesto del que
 existe, deducible a mano sin correr el solver. La regla vigente del 30 % está a
-solo 3,3 puntos de ese límite. Detalle en [`procedimiento.md`](procedimiento.md) §5.3.
+solo 3,3 puntos de ese límite. Detalle en [`docs/procedimiento.md`](docs/procedimiento.md) §5.3.
 
 ### ✅ Hecho — Tests de supuestos (±30 %, tornado, escenarios estructurales)
 
@@ -185,7 +188,7 @@ estructurales (S5, S7a, S7b, S8) (`scripts/05_tests_supuestos.py`).
 ±30 %, y en un caso límite (R5, cuyo −30 % teórico resultó infactible porque
 pisa el share ya instalado). El plan del punto a) no depende de forma frágil
 de los datos que había que completar. Detalle en
-[`procedimiento.md`](procedimiento.md) §4.
+[`docs/procedimiento.md`](docs/procedimiento.md) §4.
 
 ### ✅ Hecho — Informe final
 
@@ -204,14 +207,14 @@ Página 1 = estructura del informe. Página 4 = preguntas a responder. No son lo
 Ver plan §0. Cuando hables de "el punto 2", aclará de cuál lista.
 
 **2. Cuatro secciones del plan quedaron desactualizadas** por el hallazgo de R10
-(ver `procedimiento.md` §2.1). El modelo real es el que está en `src/`, no el del plan:
+(ver `docs/procedimiento.md` §2.1). El modelo real es el que está en `src/`, no el del plan:
 
 | Sección del plan | Qué le falta |
 |---|---|
 | **§5.2** Variables por tramo | No tiene el tramo de **desperdicio** (tasa 0, sin tope) que lleva cada marca |
 | **§7** Tabla de restricciones | Llega hasta R9. **Falta R10**, la saturación física por segmento |
 | **§11** Protocolo de tests | No incluye `R10_tope_saturacion` entre los parámetros a barrer. **Hay que agregarlo** (60 %, 70 %, 80 %, 100 %): el segmento alto queda saturado, así que ese techo mueve mucho el resultado |
-| **§12.c** Frontera de Pareto | Asume que hay una curva que trazar. Con las reglas actuales **colapsa en un punto**. Ya resuelto barriendo cuatro escenarios en vez de uno — ver `procedimiento.md` §5.2 |
+| **§12.c** Frontera de Pareto | Asume que hay una curva que trazar. Con las reglas actuales **colapsa en un punto**. Ya resuelto barriendo cuatro escenarios en vez de uno — ver `docs/procedimiento.md` §5.2 |
 
 **3. Hay una restricción que no está en el enunciado: R10.**
 El enunciado pone un techo de participación solo para la gama baja (el 65 %). Sin un techo
@@ -284,7 +287,7 @@ Cualquier cambio al modelo tiene que seguir pasando estas cuatro:
 1. **31 asserts de datos** — `python scripts/00_verificar_datos.py`
 2. **7 cotas deducidas a mano** — las imprime `01_modelo_base.py` en su sección 1
 3. **Los 5 precios sombra reconstruidos con aritmética de servilleta** coinciden a cinco
-   decimales (`procedimiento.md` §6.3). Es la verificación más fuerte que tenemos: si un dual
+   decimales (`docs/procedimiento.md` §6.3). Es la verificación más fuerte que tenemos: si un dual
    deja de cerrar, el modelo dejó de decir lo que creemos que dice.
 4. **R6 (umbral de Candealix) no está activa** — 43,7 millones de paquetes contra un umbral de
    2,5 millones
